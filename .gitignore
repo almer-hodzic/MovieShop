@@ -460,12 +460,18 @@ yarn-error.log*
 .codex-temp-*/
 .codex-temp-*
 
+# Old local backend folder retained temporarily after repository rename
+/Market.Backend/
+
+# Old local frontend folder retained temporarily after repository rename
+/Market.Frontend/
+
 # IDE project metadata
 .idea/
 **/.idea/
 
 # Stray dependency lockfiles outside the Angular project root
-Market.Frontend/package-lock.json
+/package-lock.json
 
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider

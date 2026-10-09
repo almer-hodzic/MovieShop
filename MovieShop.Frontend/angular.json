@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "rs1-frontend-2025-26": {
+    "movieshop-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -113,10 +113,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "rs1-frontend-2025-26:build:production"
+              "buildTarget": "movieshop-frontend:build:production"
             },
             "development": {
-              "buildTarget": "rs1-frontend-2025-26:build:development"
+              "buildTarget": "movieshop-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

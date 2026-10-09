@@ -32,7 +32,7 @@ The frontend is an Angular non-standalone application. It uses modules, lazy-loa
 
 ```text
 MovieShop/
-  Market.Backend/
+  MovieShop.Backend/
     Market.Backend.sln
     Market.API/
     Market.Application/
@@ -40,11 +40,10 @@ MovieShop/
     Market.Infrastructure/
     Market.Shared/
     Market.Tests/
-  Market.Frontend/
-    rs1-frontend-2025-26/
-      angular.json
-      package.json
-      src/
+  MovieShop.Frontend/
+    angular.json
+    package.json
+    src/
   db-backups/
   dokumenti/
   README.md
@@ -53,7 +52,7 @@ MovieShop/
 ## Backend Startup
 
 ```powershell
-cd Market.Backend
+cd MovieShop.Backend
 dotnet restore
 dotnet build
 dotnet run --project Market.API
@@ -64,7 +63,7 @@ The API reads `appsettings.json`, `appsettings.Development.json`, environment va
 ## Frontend Startup
 
 ```powershell
-cd Market.Frontend\rs1-frontend-2025-26
+cd MovieShop.Frontend
 npm install
 npm start
 ```
@@ -109,11 +108,11 @@ User123!
 ## Build and Test Commands
 
 ```powershell
-cd Market.Backend
+cd MovieShop.Backend
 dotnet build
 dotnet test
 
-cd ..\Market.Frontend\rs1-frontend-2025-26
+cd ..\MovieShop.Frontend
 npm run build
 ```
 
