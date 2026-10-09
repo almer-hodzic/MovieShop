@@ -1,42 +1,63 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {FitPaginatorBarComponent} from './components/fit-paginator-bar/fit-paginator-bar.component';
 import {materialModules} from './material-modules';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TranslatePipe} from '@ngx-translate/core';
-import { FitConfirmDialogComponent } from './components/fit-confirm-dialog/fit-confirm-dialog.component';
-import {DialogHelperService} from './services/dialog-helper.service';
-import { FitLoadingBarComponent } from './components/fit-loading-bar/fit-loading-bar.component';
-import { FitTableSkeletonComponent } from './components/fit-table-skeleton/fit-table-skeleton.component';
+import { PosterComponent } from './components/poster/poster.component';
+import { StarComponent } from './components/star/star.component';
+import { StarRatingComponent } from './components/star-rating/star-rating.component';
+import { SearchComponent } from './components/search/search.component';
+import { SelectInputComponent } from './components/select-input/select-input.component';
+import { CategoryInputComponent } from './components/category-input/category-input.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { ScrollTopComponent } from './components/scroll-top/scroll-top.component';
+import { ActorDialogComponent } from './components/actor-dialog/actor-dialog.component';
+import { MovieShopConfirmDialogComponent } from './components/movieshop-confirm-dialog/movieshop-confirm-dialog.component';
+import { MovieshopMenuComponent } from '../public/movieshop-menu/movieshop-menu.component';
+import { MovieShopNotificationDialogComponent } from '../public/notification-dialog/movieshop-notification-dialog.component';
+import { RouterModule } from '@angular/router';
 
 
 
 @NgModule({
   declarations: [
-    FitPaginatorBarComponent,
-    FitConfirmDialogComponent,
-    FitLoadingBarComponent,
-    FitTableSkeletonComponent
+    PosterComponent,
+    StarComponent,
+    StarRatingComponent,
+    SearchComponent,
+    SelectInputComponent,
+    CategoryInputComponent,
+    SpinnerComponent,
+    ScrollTopComponent,
+    ActorDialogComponent,
+    MovieShopConfirmDialogComponent,
+    MovieshopMenuComponent,
+    MovieShopNotificationDialogComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslatePipe,
+    RouterModule,
     ...materialModules
   ],
-  providers: [
-    DialogHelperService
-  ],
   exports:[
-    FitPaginatorBarComponent,
     CommonModule,
     ReactiveFormsModule,
-    TranslatePipe,
     FormsModule,
-    FitLoadingBarComponent,
-    FitTableSkeletonComponent,
-    materialModules
+    RouterModule,
+    materialModules,
+    PosterComponent,
+    StarComponent,
+    StarRatingComponent,
+    SearchComponent,
+    SelectInputComponent,
+    CategoryInputComponent,
+    SpinnerComponent,
+    ScrollTopComponent,
+    ActorDialogComponent,
+    MovieShopConfirmDialogComponent,
+    MovieshopMenuComponent,
+    MovieShopNotificationDialogComponent
   ]
 })
 export class SharedModule { }

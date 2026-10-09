@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$movieshop-primary: mat.m2-define-palette(mat.$m2-teal-palette);
+$movieshop-accent: mat.m2-define-palette(mat.$m2-red-palette, 800);
+$movieshop-warn: mat.m2-define-palette(mat.$m2-deep-purple-palette, 500);
+$movieshop-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $movieshop-primary,
+    accent: $movieshop-accent,
+    warn: $movieshop-warn,
+  )
+));
+
+@include mat.all-component-themes($movieshop-theme);
+
+$alternate-primary: mat.m2-define-palette(mat.$m2-grey-palette, 900);
+$alternate-accent: mat.m2-define-palette(mat.$m2-teal-palette, 800);
+$alternate-warn: mat.m2-define-palette(mat.$m2-teal-palette);
+$alternate-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $alternate-primary,
+    accent: $alternate-accent,
+    warn: $alternate-warn,
+  )
+));
+
+.alternate-theme {
+  @include mat.toolbar-theme($alternate-theme);
+  @include mat.button-theme($alternate-theme);
+}

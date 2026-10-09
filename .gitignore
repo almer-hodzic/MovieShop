@@ -456,6 +456,17 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Local agent scratch files and generated submission diagnostics
+.codex-temp-*/
+.codex-temp-*
+
+# IDE project metadata
+.idea/
+**/.idea/
+
+# Stray dependency lockfiles outside the Angular project root
+Market.Frontend/package-lock.json
+
 
 # Covers JetBrains IDEs: IntelliJ, GoLand, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839

@@ -6,6 +6,7 @@ using Market.Shared.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Market.Infrastructure;
@@ -22,6 +23,19 @@ public static class DependencyInjection
             .Bind(configuration.GetSection(ConnectionStringsOptions.SectionName))
             .ValidateDataAnnotations()
             .ValidateOnStart();
+
+        services.AddOptions<PayPalOptions>()
+            .Bind(configuration.GetSection(PayPalOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.AddOptions<EmailOptions>()
+            .Bind(configuration.GetSection(EmailOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        services.Configure<DevelopmentEmailOptions>(
+            configuration.GetSection(DevelopmentEmailOptions.SectionName));
 
         // DbContext: InMemory for test environments; SQL Server otherwise
         services.AddDbContext<DatabaseContext>((sp, options) =>
@@ -45,6 +59,52 @@ public static class DependencyInjection
 
         // Token service (reads JwtOptions via IOptions<JwtOptions>)
         services.AddTransient<IJwtTokenService, JwtTokenService>();
+        services.AddMemoryCache();
+        services.AddSingleton<IPayPalCheckoutSessionStore, MemoryPayPalCheckoutSessionStore>();
+        services.AddHttpClient<IPayPalService, PayPalService>();
+        services.AddHttpClient<SendGridAuthEmailService>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.sendgrid.com/");
+        });
+
+        if (env.IsDevelopment())
+        {
+            services.AddScoped<IAuthEmailService>(sp =>
+            {
+                var developmentEmailOptions = sp.GetRequiredService<IOptions<DevelopmentEmailOptions>>().Value;
+                var emailOptions = sp.GetRequiredService<IOptions<EmailOptions>>().Value;
+                var logger = sp.GetRequiredService<ILoggerFactory>()
+                    .CreateLogger(nameof(DependencyInjection));
+
+                if (DevelopmentSmtpAuthEmailService.IsSandboxInterceptionHost(developmentEmailOptions.Host))
+                {
+                    logger.LogWarning(
+                        "Development SMTP host is a sandbox interception host and will not be used for real recipient delivery.");
+                }
+
+                if (DevelopmentSmtpAuthEmailService.CanUse(developmentEmailOptions))
+                {
+                    logger.LogInformation("Development email delivery: SMTP");
+                    return ActivatorUtilities.CreateInstance<DevelopmentSmtpAuthEmailService>(sp);
+                }
+
+                if (SendGridAuthEmailService.CanUse(emailOptions))
+                {
+                    logger.LogInformation("Development email delivery: SendGrid");
+                    return sp.GetRequiredService<SendGridAuthEmailService>();
+                }
+
+                logger.LogInformation("Development email delivery: Console fallback");
+                return ActivatorUtilities.CreateInstance<DevelopmentAuthEmailService>(sp);
+            });
+        }
+        else
+        {
+            services.AddHttpClient<IAuthEmailService, SendGridAuthEmailService>(client =>
+            {
+                client.BaseAddress = new Uri("https://api.sendgrid.com/");
+            });
+        }
 
         // HttpContext accessor + current user
         services.AddHttpContextAccessor();

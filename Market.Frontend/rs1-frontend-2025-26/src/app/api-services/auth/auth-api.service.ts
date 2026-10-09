@@ -7,7 +7,16 @@ import {
   LoginCommandDto,
   RefreshTokenCommand,
   RefreshTokenCommandDto,
-  LogoutCommand
+  LogoutCommand,
+  RegisterCommand,
+  RegisterCommandDto,
+  ForgotPasswordCommand,
+  ForgotPasswordCommandDto,
+  ResetPasswordCommand,
+  ResetPasswordCommandDto,
+  ConfirmEmailCommand,
+  ConfirmEmailCommandDto,
+  VerifyTwoFactorCommand
 } from './auth-api.model';
 
 @Injectable({
@@ -39,5 +48,25 @@ export class AuthApiService {
    */
   logout(payload: LogoutCommand): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, payload);
+  }
+
+  register(payload: RegisterCommand): Observable<RegisterCommandDto> {
+    return this.http.post<RegisterCommandDto>(`${this.baseUrl}/register`, payload);
+  }
+
+  forgotPassword(payload: ForgotPasswordCommand): Observable<ForgotPasswordCommandDto> {
+    return this.http.post<ForgotPasswordCommandDto>(`${this.baseUrl}/forgot-password`, payload);
+  }
+
+  resetPassword(payload: ResetPasswordCommand): Observable<ResetPasswordCommandDto> {
+    return this.http.post<ResetPasswordCommandDto>(`${this.baseUrl}/reset-password`, payload);
+  }
+
+  confirmEmail(payload: ConfirmEmailCommand): Observable<ConfirmEmailCommandDto> {
+    return this.http.post<ConfirmEmailCommandDto>(`${this.baseUrl}/confirm-email`, payload);
+  }
+
+  verifyTwoFactor(payload: VerifyTwoFactorCommand): Observable<LoginCommandDto> {
+    return this.http.post<LoginCommandDto>(`${this.baseUrl}/verify-2fa`, payload);
   }
 }

@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Notifications
+  <button mat-icon-button [mat-dialog-close]="true" class="close-button">
+    <mat-icon aria-label="Close dialog">close</mat-icon>
+  </button>
+  <div *ngIf="unreadNotifications.length > 0" class="notification-read-all" (click)="markAllAsRead()">Set all as read</div>
+</h2>
+<hr class="dialog-divider">
+<div class="notification-dialog">
+  <mat-dialog-content>
+    <ng-container *ngIf="data.length > 0; else noNotifications">
+      <div *ngFor="let notification of data" class="notification-item" [class.read]="notification.isRead">
+        <mat-icon class="notification-icon">circle</mat-icon>
+        <div class="notification-text" (click)="redirectToMovie(notification)">
+          {{ notification.notificationText }}
+        </div>
+        <div class="notification-date">{{ notification.notificationDate | date: 'short' }}</div>
+        <div
+          *ngIf="!notification.isRead"
+          class="notification-read"
+          (click)="markAsRead(notification)"
+        >Set as read</div>
+        <button mat-icon-button type="button" aria-label="Delete notification" (click)="deleteNotification(notification)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #noNotifications>
+      <div>No notifications found.</div>
+    </ng-template>
+  </mat-dialog-content>
+</div>

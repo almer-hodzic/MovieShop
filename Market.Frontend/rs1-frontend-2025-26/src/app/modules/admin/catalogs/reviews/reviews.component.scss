@@ -1,0 +1,84 @@
+.review-management {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #212121;
+  color: white;
+}
+
+h2 {
+  font-size: 24px;
+  color: #6C63FF;
+  border-bottom: 2px solid #6C63FF;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.form-container {
+  background-color: #333333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 40px;
+  color: white;
+}
+
+.review-list {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #333333;
+  color: #6C63FF;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+tbody tr {
+  background-color: #333333;
+  transition: background-color 0.3s ease;
+}
+
+tbody tr:hover {
+  background-color: #444444;
+}
+
+button.delete-btn {
+  background-color: #FF5252;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button.delete-btn:hover {
+  background-color: #E53935;
+  transform: scale(1.05);
+}
+
+button.delete-btn:focus {
+  outline: none;
+}
+
+.state,
+.loading-state {
+  padding: 24px;
+  text-align: center;
+}
+
+.state.error {
+  color: #FF5252;
+}

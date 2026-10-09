@@ -18,7 +18,7 @@ const routes: Routes = [
   {
     path: 'client',
     canActivate: [myAuthGuard],
-    data: myAuthData({ requireAuth: true }),// bilo ko logiran
+    data: myAuthData({ requireAuth: true }),
     loadChildren: () =>
       import('./modules/client/client-module').then(m => m.ClientModule)
   },
@@ -27,7 +27,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/public/public-module').then(m => m.PublicModule)
   },
-  // fallback 404
+  // Fallback 404
   { path: '**', redirectTo: '' }
 ];
 

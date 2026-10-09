@@ -1,0 +1,24 @@
+<div class="lock-icon"><i class="fas fa-user-lock fa-3x"></i></div>
+  <mat-card-title>Verify <span class="title">Two-Factor Authentication</span></mat-card-title>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <p class="info">Enter the six-digit verification code sent to your email.</p>
+    <form novalidate [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="auth-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <mat-form-field appearance="outline" color="warn">
+        <mat-label>Verification Code</mat-label>
+        <input matInput type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter 6-digit code" formControlName="code" />
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="form.controls.code.hasError('required')">Code is required.</mat-error>
+        <mat-error *ngIf="form.controls.code.hasError('pattern')">Code must be exactly 6 digits.</mat-error>
+      </mat-form-field>
+      <div class="btn">
+        <button mat-raised-button color="warn" type="submit" class="action-btn" [disabled]="isLoading || form.invalid">
+          <i *ngIf="isLoading" class="fas fa-spinner fa-spin fa-lg fa-fw"></i>
+          Verify Code
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+  <div class="bottom-btns"><p class="forgot"><button type="button" class="back-link" (click)="cancel()">Back to Login</button></p></div>
+  <mat-divider></mat-divider>

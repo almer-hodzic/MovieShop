@@ -1,0 +1,76 @@
+<app-spinner *ngIf="isLoading" color="#5552ff" class="spinner"></app-spinner>
+<div class="header">
+  <div class="flex-container">
+    <div>
+      <span class="pageTitle">{{ pageTitle }}</span>
+      <div style="display: inline-block;">
+        <i
+          class="fas fa-list fa-2x icon"
+          [class.color]="viewMode === 'list'"
+          matTooltip="List View"
+          matTooltipClass="toolpit"
+          (click)="changeView('list')"
+        ></i>
+        <i
+          class="fas fa-th fa-2x icon"
+          [class.color]="viewMode === 'grid'"
+          matTooltip="Grid View"
+          matTooltipClass="toolpit"
+          (click)="changeView('grid')"
+        ></i>
+      </div>
+    </div>
+    <app-select-input
+      label="Sort by:"
+      [options]="['Last Added', 'Most Popular']"
+      [option]="sortBy"
+      (optionChange)="onSortChange($any($event))"
+      class="select"
+    >
+    </app-select-input>
+    <app-category-input
+      label="Category:"
+      [options]="categoryOptions"
+      [option]="selectedCategoryId"
+      (optionChange)="onCategoryChange($event)"
+      class="select"
+    >
+    </app-category-input>
+    <app-search
+      [search]="searchTitle"
+      (searchChange)="onSearchChange($event)"
+      [customPlaceholder]="'Search...'"
+      class="search"
+    ></app-search>
+    <div class="select-container">
+      <label>Price Range</label>
+    </div>
+    <ngx-slider
+      [(value)]="minValue"
+      [(highValue)]="maxValue"
+      [options]="options"
+      (userChangeEnd)="setSliderValue()">
+    </ngx-slider>
+    <mat-paginator
+      [length]="totalMovies"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [hidePageSize]="true"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</div>
+<ng-container *ngIf="!isLoading && !errorMessage && movies && movies.length">
+  <app-movies-list-view
+    [movies]="movies"
+    *ngIf="viewMode === 'list'"
+  ></app-movies-list-view>
+  <app-movies-grid-view
+    [movies]="movies"
+    *ngIf="viewMode === 'grid'"
+  ></app-movies-grid-view>
+</ng-container>
+<div *ngIf="!isLoading && errorMessage" class="notfound error">{{ errorMessage }}</div>
+<div *ngIf="!isLoading && !errorMessage && movies.length === 0" class="notfound">No movies found.</div>
+<app-scroll-top></app-scroll-top>

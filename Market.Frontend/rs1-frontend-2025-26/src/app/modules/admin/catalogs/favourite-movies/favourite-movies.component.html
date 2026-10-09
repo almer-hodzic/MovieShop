@@ -1,0 +1,70 @@
+<div class="favourite-movies-page">
+  <div class="page-header">
+    <h1>My Favourite Movies</h1>
+    <button mat-raised-button color="primary" type="button" (click)="goToMovies()">
+      <mat-icon>add</mat-icon>
+      Add From Movies
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="table-card">
+      <table mat-table [dataSource]="items">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let item">{{ item.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="director">
+          <th mat-header-cell *matHeaderCellDef>Director</th>
+          <td mat-cell *matCellDef="let item">{{ item.directorName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="releaseDate">
+          <th mat-header-cell *matHeaderCellDef>Release Date</th>
+          <td mat-cell *matCellDef="let item">{{ item.releaseDate | date: 'mediumDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="score">
+          <th mat-header-cell *matHeaderCellDef>Average Score</th>
+          <td mat-cell *matCellDef="let item">{{ item.averageScore ?? '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let item">{{ item.price | number: '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateAdded">
+          <th mat-header-cell *matHeaderCellDef>Date Added</th>
+          <td mat-cell *matCellDef="let item">{{ item.dateAdded | date: 'medium' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let item">
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              matTooltip="Remove from favourites"
+              (click)="onRemove(item)"
+            >
+              <mat-icon>heart_broken</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr *matNoDataRow>
+          <td [attr.colspan]="displayedColumns.length" class="state">No favourite movies yet.</td>
+        </tr>
+      </table>
+    </div>
+  }
+</div>

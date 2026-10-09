@@ -2,6 +2,8 @@
 using Market.API.Middleware;
 using Market.Application;
 using Market.Infrastructure;
+using Market.Infrastructure.Common;
+using Market.Shared.Options;
 using Serilog;
 
 public partial class Program
@@ -56,7 +58,7 @@ public partial class Program
                     policy =>
                     {
                         policy
-                            .WithOrigins("http://localhost:4200") // kao string array može i više URL-ova
+                            .WithOrigins("http://localhost:4200")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
@@ -72,6 +74,27 @@ public partial class Program
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                var developmentEmailOptions = app.Configuration
+                    .GetSection(DevelopmentEmailOptions.SectionName)
+                    .Get<DevelopmentEmailOptions>() ?? new DevelopmentEmailOptions();
+                var emailOptions = app.Configuration
+                    .GetSection(EmailOptions.SectionName)
+                    .Get<EmailOptions>() ?? new EmailOptions();
+
+                var emailMode = DevelopmentSmtpAuthEmailService.CanUse(developmentEmailOptions)
+                    ? "SMTP"
+                    : SendGridAuthEmailService.CanUse(emailOptions)
+                        ? "SendGrid"
+                        : "Console fallback";
+
+                if (DevelopmentSmtpAuthEmailService.IsSandboxInterceptionHost(developmentEmailOptions.Host))
+                {
+                    Log.Warning(
+                        "Development SMTP host is a sandbox interception host and will not be used for real recipient delivery.");
+                }
+
+                Log.Information("Development email delivery: {EmailMode}", emailMode);
             }
 
             // Global exception handler (IExceptionHandler)
@@ -79,7 +102,7 @@ public partial class Program
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             app.UseHttpsRedirection();
-            // UseCors ide prije UseAuthorization i UseAuthentification
+            // UseCors must run before authentication and authorization.
             app.UseCors("AllowAngularDev");
 
             app.UseAuthentication();
@@ -88,15 +111,15 @@ public partial class Program
             app.MapControllers();
 
             // Database migrations + seeding
-            await app.Services.InitializeDatabaseAsync(app.Environment);
+            await app.Services.InitializeDatabaseAsync(app.Environment, app.Configuration);
 
             Log.Information("Market API started successfully.");
             app.Run();
         }
         catch (HostAbortedException)
         {
-            // EF Core tools abortiraju host nakon što uzmu DbContext.
-            // Ovo nije runtime greška – samo tiho izađi.
+            // EF Core tools abort the host after resolving DbContext.
+            // This is not a runtime failure, so exit quietly.
             Log.Information("Host aborted by EF Core tooling (design-time) - its ok.");
         }
         catch (Exception ex)

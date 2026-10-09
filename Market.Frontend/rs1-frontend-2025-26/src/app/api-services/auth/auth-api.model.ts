@@ -15,6 +15,10 @@ export interface LoginCommand {
  * Corresponds to: LoginCommandDto.cs
  */
 export interface LoginCommandDto {
+  userId: number;
+  requiresTwoFactor: boolean;
+  emailDeliveryFallbackUsed?: boolean;
+  emailDeliveryMessage?: string | null;
   accessToken: string;
   refreshToken: string;
   /**
@@ -22,6 +26,13 @@ export interface LoginCommandDto {
    * Example: "2025-12-02T23:59:59Z"
    */
   expiresAtUtc: string;
+}
+
+export interface VerifyTwoFactorCommand {
+  userId: number;
+  code: string;
+  password: string;
+  fingerprint?: string | null;
 }
 
 /**
@@ -56,4 +67,58 @@ export interface RefreshTokenCommandDto {
  */
 export interface LogoutCommand {
   refreshToken: string;
+}
+
+export interface RegisterCommand {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterCommandDto {
+  id: number;
+  email: string;
+  firstname: string;
+  lastname: string;
+  isEnabled: boolean;
+  isEmployee: boolean;
+  isEmailConfirmed: boolean;
+  emailDeliveryFallbackUsed?: boolean;
+  emailDeliveryMessage?: string | null;
+}
+
+export interface ForgotPasswordCommand {
+  email: string;
+}
+
+export interface ForgotPasswordCommandDto {
+  email: string;
+  message: string;
+  emailDeliveryFallbackUsed?: boolean;
+  emailDeliveryMessage?: string | null;
+}
+
+export interface ResetPasswordCommand {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ResetPasswordCommandDto {
+  email: string;
+  message: string;
+}
+
+export interface ConfirmEmailCommand {
+  email: string;
+  token: string;
+}
+
+export interface ConfirmEmailCommandDto {
+  id: number;
+  email: string;
+  isEmailConfirmed: boolean;
+  emailConfirmedAtUtc: string;
 }

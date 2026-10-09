@@ -1,0 +1,107 @@
+<div class="alternate-theme">
+  <mat-toolbar color="primary" class="mat-elevation-z4">
+
+    <button mat-button class="title" routerLink="/welcome">{{ pageTitle }}</button>
+
+    <span *ngIf="mobileQuery.matches ? false : true">
+      <button mat-button
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLink="/movies">
+        <i class="fas fa-film"></i>
+        Movie List
+      </button>
+      <button mat-button
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLink="/movies/Favourites">
+        <i class="fas fa-person-booth"></i>
+        Favorites
+      </button>
+      <button mat-raised-button
+              *ngIf="isAdmin()"
+              color="warn"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLink="/admin">
+        <i class="fas fa-user-shield"></i>
+        Admin Panel
+      </button>
+    </span>
+
+    <div id="google_translate_element"></div>
+    <span class="spacer"></span>
+
+    <span class="icons-container">
+      <button mat-icon-button routerLink="/shopping-cart" routerLinkActive="active">
+        <mat-icon>shopping_cart</mat-icon>
+      </button>
+      <ng-container *ngIf="isAuthenticated()">
+        <button mat-icon-button class="notification-button" (click)="openNotifications()">
+          <mat-icon
+            [matBadge]="unreadNotificationCount"
+            [matBadgeHidden]="unreadNotificationCount === 0"
+            matBadgeColor="warn"
+          >notifications</mat-icon>
+        </button>
+      </ng-container>
+    </span>
+
+    <ng-container *ngIf="isAuthenticated(); else login">
+      <span class="welcome">Welcome <i class="username">{{ userEmail }}</i></span>
+    </ng-container>
+    <ng-template #login>
+      <button mat-raised-button color="warn" routerLink="/auth/login">
+        <i class="fas fa-sign-in-alt"></i>
+        <span class="menu-item">Log In</span>
+      </button>
+    </ng-template>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <i class="fas fa-chevron-circle-down fa-2x"></i>
+    </button>
+    <mat-menu #menu="matMenu" class="movieshop-menu-panel">
+      <span *ngIf="mobileQuery.matches ? true : false">
+        <button mat-menu-item
+                *ngIf="isAdmin"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                routerLink="/admin">
+          <i class="fas fa-user-shield"></i>
+          <span class="menu-item">Admin Panel</span>
+        </button>
+        <button mat-menu-item
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                routerLink="/movies">
+          <i class="fas fa-film"></i>
+          <span class="menu-item">Movie List</span>
+        </button>
+        <button mat-menu-item
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                routerLink="/movies/Favourites">
+          <i class="fas fa-person-booth"></i>
+          <span class="menu-item">My List</span>
+        </button>
+      </span>
+      <a target="_blank" class="git-btn">
+        <button mat-menu-item>
+          <i class="fab fa-github-alt"></i>
+          <span class="menu-item">GitHub</span>
+        </button>
+      </a>
+      <button mat-menu-item *ngIf="isAuthenticated()"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLink="/user">
+        <i class="fas fa-user"></i>
+        <span class="menu-item">Profile</span>
+      </button>
+      <button mat-menu-item *ngIf="isAuthenticated()" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="menu-item">Log Out</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+</div>

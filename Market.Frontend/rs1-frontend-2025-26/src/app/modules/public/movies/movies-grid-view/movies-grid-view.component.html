@@ -1,0 +1,11 @@
+<div class="poster-container">
+  <ng-container *ngFor="let movie of movies">
+    <app-poster
+      [posterImgUrl]="getMovieImage(movie)"
+      [fallbackImgUrl]="getLegacyMovieImage(movie)"
+      [alt]="movie.title"
+      [routerLink]="['/movies', movie.id, { backurl: 'movies' }]"
+      class="poster"
+    ></app-poster>
+  </ng-container>
+</div>

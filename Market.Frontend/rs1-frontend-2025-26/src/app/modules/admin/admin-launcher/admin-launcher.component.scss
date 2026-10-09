@@ -1,0 +1,132 @@
+.admin-panel {
+  background-color: #212121;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background-image: linear-gradient(315deg, #000000 0%, #414141 74%);
+  color: whitesmoke;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.admin-panel h1 {
+  font-size: 24px;
+  color: aliceblue;
+  margin-bottom: 20px;
+}
+
+.admin-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 28px;
+}
+
+.admin-btn {
+  background-color: #009688;
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  min-width: 190px;
+}
+
+.admin-btn mat-icon {
+  margin-right: 8px;
+  color: aliceblue;
+}
+
+.admin-btn:hover {
+  background-color: #00796b;
+  transform: translateY(-2px);
+}
+
+.admin-btn:active {
+  transform: translateY(1px);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  min-height: 130px;
+  padding: 18px;
+  border: 1px solid #6c63ff;
+  border-radius: 8px;
+  background-color: #333333;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.stat-card:hover {
+  background-color: #3a3a3a;
+  border-color: #009688;
+  transform: translateY(-2px);
+}
+
+.stat-card.static-card {
+  cursor: default;
+}
+
+.stat-card.static-card:hover {
+  background-color: #333333;
+  border-color: #6c63ff;
+  transform: none;
+}
+
+.stat-card mat-icon {
+  color: #009688;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: aliceblue;
+}
+
+.stat-label {
+  color: #bbbbbb;
+}
+
+.dashboard-state {
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #bbbbbb;
+}
+
+.dashboard-state.error {
+  color: #ff5252;
+  flex-direction: column;
+}
+
+@media (max-width: 600px) {
+  .admin-panel {
+    padding: 16px;
+  }
+
+  .admin-options {
+    flex-direction: column;
+  }
+}

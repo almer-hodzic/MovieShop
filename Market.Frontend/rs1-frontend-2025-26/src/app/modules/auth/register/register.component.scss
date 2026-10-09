@@ -1,0 +1,12 @@
+.title { font-family: 'Poller One', cursive; color: #6c63ff; font-size: 23px; padding-left: 5px; }
+.label { margin-left: 3px; }
+mat-form-field { width: 100%; min-width: 300px; }
+.action-btn { width: 100%; }
+.lock-icon { margin-bottom: 15px; }
+.back { color: white; text-decoration: none; }
+.icon { margin-right: 3px; }
+.terms { font-size: 12px; margin-bottom: 15px; }
+mat-checkbox { margin-right: 5px; }
+.policy { color: #7586e4; font-weight: bold; }
+.error-message { color: #f44336; font-size: 12px; }
+@media (max-width: 380px) { mat-form-field { min-width: 0; } }

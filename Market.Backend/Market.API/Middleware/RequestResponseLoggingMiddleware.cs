@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 
 namespace Market.API.Middleware;
 
@@ -24,7 +26,7 @@ public sealed class RequestResponseLoggingMiddleware(
         {
             request.EnableBuffering();
             using var reader = new StreamReader(request.Body, Encoding.UTF8, leaveOpen: true);
-            requestBody = await reader.ReadToEndAsync();
+            requestBody = RedactSensitiveJson(await reader.ReadToEndAsync());
             request.Body.Position = 0;
         }
 
@@ -43,7 +45,7 @@ public sealed class RequestResponseLoggingMiddleware(
 
             // read response text for logging
             responseBody.Seek(0, SeekOrigin.Begin);
-            var responseText = await new StreamReader(responseBody).ReadToEndAsync();
+            var responseText = RedactSensitiveJson(await new StreamReader(responseBody).ReadToEndAsync());
             responseBody.Seek(0, SeekOrigin.Begin);
 
             var logMessage = new StringBuilder()
@@ -84,5 +86,60 @@ public sealed class RequestResponseLoggingMiddleware(
             context.Response.Body = originalBodyStream;
             await responseBody.CopyToAsync(originalBodyStream);
         }
+    }
+
+    private static string RedactSensitiveJson(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return value;
+
+        try
+        {
+            var node = JsonNode.Parse(value);
+            RedactNode(node);
+            return node?.ToJsonString() ?? value;
+        }
+        catch
+        {
+            return Regex.Replace(
+                value,
+                "(?i)([\"']?(?:password|currentPassword|newPassword|confirmPassword|token|accessToken|refreshToken|passwordResetToken|emailConfirmationToken|twoFactorCode|clientSecret)[\"']?\\s*:\\s*)([\"'][^\"']*[\"']|[^,}\\s]+)",
+                "$1[REDACTED]");
+        }
+    }
+
+    private static void RedactNode(JsonNode? node)
+    {
+        if (node is JsonObject jsonObject)
+        {
+            foreach (var property in jsonObject.ToList())
+            {
+                if (IsSensitive(property.Key))
+                    jsonObject[property.Key] = "[REDACTED]";
+                else
+                    RedactNode(property.Value);
+            }
+        }
+        else if (node is JsonArray jsonArray)
+        {
+            foreach (var item in jsonArray)
+                RedactNode(item);
+        }
+    }
+
+    private static bool IsSensitive(string propertyName)
+    {
+        return propertyName.Equals("password", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("currentPassword", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("newPassword", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("confirmPassword", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("token", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("accessToken", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("refreshToken", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("passwordResetToken", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("emailConfirmationToken", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("twoFactorCode", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("code", StringComparison.OrdinalIgnoreCase)
+            || propertyName.Equals("clientSecret", StringComparison.OrdinalIgnoreCase);
     }
 }

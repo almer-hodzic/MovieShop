@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <PreserveCompilationContext>true</PreserveCompilationContext>
+    <UserSecretsId>Market.API-Development-7f8b0a92-39a3-4bf7-b52a-92dc17702526</UserSecretsId>
   </PropertyGroup>
 
 

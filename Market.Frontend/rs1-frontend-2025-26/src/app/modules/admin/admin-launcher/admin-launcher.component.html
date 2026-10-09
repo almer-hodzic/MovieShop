@@ -1,0 +1,33 @@
+<div class="admin-panel">
+  <h1>Admin Dashboard</h1>
+
+  <div *ngIf="isLoading" class="dashboard-state">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Loading dashboard data...</span>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="dashboard-state error">
+    <span>{{ errorMessage }}</span>
+    <button mat-stroked-button type="button" (click)="loadDashboard()">Retry</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="dashboard-grid">
+    <button
+      *ngFor="let card of statCards"
+      class="stat-card"
+      [class.static-card]="!card.route"
+      [routerLink]="card.route || null"
+      type="button">
+      <mat-icon>{{ card.icon }}</mat-icon>
+      <span class="stat-value">{{ card.value }}</span>
+      <span class="stat-label">{{ card.label }}</span>
+    </button>
+  </div>
+
+  <div class="admin-options">
+    <button *ngFor="let item of navigationItems" [routerLink]="item.route" class="admin-btn" type="button">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      {{ item.label }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="upsert-page">
+  <div class="title-row">
+    <h1>{{ title }}</h1>
+  </div>
+
+  <div class="form-container">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" maxlength="100" />
+          <mat-error *ngIf="hasError('firstName')">
+            {{ getErrorMessage('firstName') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" maxlength="100" />
+          <mat-error *ngIf="hasError('lastName')">
+            {{ getErrorMessage('lastName') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Birth Date</mat-label>
+          <input matInput [matDatepicker]="birthDatePicker" formControlName="birthDate" />
+          <mat-datepicker-toggle matSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #birthDatePicker></mat-datepicker>
+          <mat-error *ngIf="hasError('birthDate')">
+            {{ getErrorMessage('birthDate') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Country Id</mat-label>
+          <input matInput type="number" min="1" formControlName="countryId" />
+          <mat-error *ngIf="hasError('countryId')">
+            {{ getErrorMessage('countryId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>IMDb Link</mat-label>
+          <input matInput formControlName="imdbLink" maxlength="500" />
+          <mat-error *ngIf="hasError('imdbLink')">
+            {{ getErrorMessage('imdbLink') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Biography</mat-label>
+          <textarea matInput rows="5" maxlength="1000" formControlName="biography"></textarea>
+          <mat-error *ngIf="hasError('biography')">
+            {{ getErrorMessage('biography') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Photo Base64</mat-label>
+          <textarea matInput rows="5" formControlName="photoBase64"></textarea>
+          <mat-hint>Use raw base64 or data URI format.</mat-hint>
+          <mat-error *ngIf="hasError('photoBase64')">
+            {{ getErrorMessage('photoBase64') }}
+          </mat-error>
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error">{{ errorMessage }}</div>
+        }
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading">
+            {{ isEditMode ? 'Save Changes' : 'Create Actor' }}
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

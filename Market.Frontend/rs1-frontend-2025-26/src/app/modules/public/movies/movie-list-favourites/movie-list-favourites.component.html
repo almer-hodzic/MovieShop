@@ -1,0 +1,28 @@
+<app-spinner *ngIf="isLoading" color="#5552ff" class="spinner"></app-spinner>
+
+<h1 class="page-title">Your favorite Movies</h1>
+
+<div class="state error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</div>
+
+<div class="state" *ngIf="!isLoading && !errorMessage && favouriteMovies.length === 0">No favorite movies found.</div>
+
+<div class="movie-list" *ngIf="!isLoading && !errorMessage && favouriteMovies.length">
+  <div *ngFor="let movie of favouriteMovies" class="movie-item">
+    <a [routerLink]="['/movies', movie.movieId]">
+      <div class="image-container">
+        <img [src]="getMovieImage(movie)" [alt]="movie.title" (error)="imageResolver.useMovieFallback($event)" />
+        <span>{{ movie.title }}</span>
+        <div class="remove-button">
+          <button
+            class="remove-favorite-btn"
+            [disabled]="isRemoving(movie.movieId)"
+            (click)="removeFromFavorites($event, movie)"
+          >
+            <mat-icon>{{ isRemoving(movie.movieId) ? 'hourglass_empty' : 'remove' }}</mat-icon>
+          </button>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+<app-scroll-top></app-scroll-top>

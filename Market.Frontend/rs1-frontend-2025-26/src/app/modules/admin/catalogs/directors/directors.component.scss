@@ -1,0 +1,121 @@
+.admin-director {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #212121;
+  color: white;
+}
+
+.form-container {
+  background-color: #333333;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 40px;
+  color: white;
+}
+
+.management-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.director-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.director-card {
+  border: 1px solid #6c63ff;
+  border-radius: 8px;
+  overflow: hidden;
+  width: calc(20% - 16px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  background-color: #333333;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+}
+
+.director-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  color: white;
+}
+
+.director-info h4 {
+  margin-top: 0;
+  font-family: 'Poller One', cursive;
+  font-size: 16px;
+  color: #6c63ff;
+}
+
+.director-info p {
+  margin: 6px 0;
+  color: #bbbbbb;
+}
+
+.director-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+button[mat-raised-button],
+button[mat-stroked-button] {
+  border: 1px solid #6c63ff;
+  color: white;
+  background: #333333;
+}
+
+button[mat-stroked-button]:hover {
+  background-color: #6c63ff;
+  color: white;
+}
+
+.state,
+.loading-state {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  color: #bbbbbb;
+}
+
+.state.error {
+  color: #ff5252;
+}
+
+.movie-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+@media (max-width: 900px) {
+  .director-card {
+    width: calc(33.333% - 16px);
+  }
+}
+
+@media (max-width: 600px) {
+  .management-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .director-card {
+    width: 100%;
+  }
+}

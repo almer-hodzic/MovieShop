@@ -1,0 +1,129 @@
+.header {
+  position: relative;
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
+  background: #21212163;
+  border: 1px solid transparent;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.80), 0 6px 6px rgba(0,0,0,0.50);
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 3px 0;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  .select, .search {
+    margin: 5px;
+  }
+
+  .select {
+    width: 190px;
+  }
+}
+
+.pageTitle {
+  font-size: 30px;
+  margin-right: 20px;
+}
+
+.icon {
+  margin-left: 10px;
+  margin-right: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.color {
+  color: #5552ff;
+}
+
+.toolpit {
+  background: #5552ff;
+  font-size: large;
+}
+
+@media screen and (max-width: 600px) {
+  .flex-container {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.notfound {
+  text-align: center;
+  padding: 24px;
+}
+
+.error {
+  color: #ff8a80;
+}
+
+.ngx-slider {
+  width: 20% !important;
+  bottom: 6.80px !important;
+}
+
+.ngx-slider .ngx-slider-pointer {
+  background-color: #55637d !important;
+  width: 28px !important;
+  height: 28px !important;
+  top: -10px !important;
+}
+
+.ngx-slider-selection {
+  background: #ff1744 !important;
+  height: 6px !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  box-shadow: inset 0 0 6px -1px rgba(144,152,164,.3) !important;
+}
+
+.ngx-slider .ngx-slider-pointer:after {
+  background-color: #ff1744 !important;
+  width: 12px !important;
+  height: 12px !important;
+  top: 8px !important;
+  left: 8px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 2px 0 rgba(255,23,68,.8) !important;
+}
+
+app-movies-browse .mat-mdc-paginator {
+  background: #212121 !important;
+  width: 282px;
+}
+
+app-movies-browse .mat-mdc-paginator-container {
+  min-height: 56px;
+  padding: 0 8px;
+}
+
+app-movies-browse .mat-mdc-paginator-range-label {
+  margin: 0 32px 0 24px;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+app-movies-browse .mat-mdc-paginator-navigation-first,
+app-movies-browse .mat-mdc-paginator-navigation-previous,
+app-movies-browse .mat-mdc-paginator-navigation-next,
+app-movies-browse .mat-mdc-paginator-navigation-last {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+}
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+}

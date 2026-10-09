@@ -1,0 +1,15 @@
+.wrapper {
+  height: 100%;
+  background-color: black;
+}
+
+.time-slider { width: 100% !important; }
+button { width: 100px; }
+.controls { display: flex; justify-content: center; align-items: center; }
+.player-state {
+  min-height: 400px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

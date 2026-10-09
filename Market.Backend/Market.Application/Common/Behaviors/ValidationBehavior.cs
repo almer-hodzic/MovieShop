@@ -1,4 +1,4 @@
-﻿// behavior
+﻿
 namespace Market.Application.Common.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>

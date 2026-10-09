@@ -1,1 +1,62 @@
-<p>register works!</p>
+<div class="lock-icon"><i class="fas fa-user-lock fa-3x"></i></div>
+  <mat-card-title>SIGN UP to <span class="title">MovieShop</span></mat-card-title>
+  <mat-divider></mat-divider>
+  <mat-card-content>
+    <form novalidate [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div *ngIf="errorMessage" class="error-message"><p>{{ errorMessage }}</p></div>
+
+      <p>
+        <mat-form-field appearance="outline" color="warn">
+          <mat-label class="label">First Name</mat-label>
+          <input matInput placeholder="type your first name" formControlName="firstname" />
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error class="error" *ngIf="form.controls.firstname.hasError('required')">Please provide a <strong>first name.</strong></mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline" color="warn">
+          <mat-label class="label">Last Name</mat-label>
+          <input matInput placeholder="type your last name" formControlName="lastname" />
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error class="error" *ngIf="form.controls.lastname.hasError('required')">Please provide a <strong>last name.</strong></mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline" color="warn">
+          <mat-label class="label">Email Address</mat-label>
+          <input type="email" matInput placeholder="type your email" formControlName="email" />
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error class="error" *ngIf="form.controls.email.hasError('required')">Please provide an <strong>email.</strong></mat-error>
+          <mat-error class="error" *ngIf="form.controls.email.hasError('email')">Please provide a <strong>valid email address.</strong></mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline" color="warn">
+          <mat-label class="label">Password</mat-label>
+          <input #passwordInput matInput [type]="hidePassword ? 'password' : 'text'" placeholder="type your password (min 8 characters)" formControlName="password" />
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"><i class="fas" [ngClass]="hidePassword ? 'fa-eye-slash' : 'fa-eye'"></i></button>
+          <mat-error class="error" *ngIf="form.controls.password.hasError('required')">Password is <strong>required.</strong></mat-error>
+          <mat-error class="error" *ngIf="form.controls.password.hasError('minlength')">Password must be at least <strong>8 characters. ({{ passwordInput.value.length || 0 }}/8)</strong></mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field appearance="outline" color="warn">
+          <mat-label class="label">Repeat Password</mat-label>
+          <input matInput [type]="hideConfirmation ? 'password' : 'text'" placeholder="repeat your password" formControlName="confirmPassword" />
+          <button mat-icon-button matSuffix type="button" (click)="hideConfirmation = !hideConfirmation"><i class="fas" [ngClass]="hideConfirmation ? 'fa-eye-slash' : 'fa-eye'"></i></button>
+          <mat-error class="error" *ngIf="form.controls.confirmPassword.hasError('required')">Please repeat your password.</mat-error>
+          <mat-error class="error" *ngIf="form.hasError('passwordsMismatch')">Passwords don't <strong>match.</strong></mat-error>
+        </mat-form-field>
+      </p>
+
+      <div class="terms">
+        <mat-checkbox formControlName="acceptTerms"></mat-checkbox>
+        I accept the <span class="policy">Terms of Service and Privacy Policy.</span>
+      </div>
+      <button [disabled]="isLoading || form.invalid" mat-raised-button class="action-btn" type="submit" color="warn">
+        <i *ngIf="isLoading" class="fas fa-spinner fa-spin fa-1x fa-fw"></i>
+        Sign Up
+      </button>
+      <p><a routerLink="/auth/login" class="back"><i class="fas fa-chevron-left icon"></i> Back to Login</a></p>
+    </form>
+  </mat-card-content>

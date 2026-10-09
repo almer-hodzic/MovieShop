@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor User
+    participant Angular
+    participant Cart as ShoppingCartController
+    participant PayPalApi as PayPalController
+    participant PayPal as PayPal sandbox
+    participant Db as MovieShopDb
+
+    User->>Angular: Browse movies
+    Angular->>Cart: Add movie to cart
+    Cart->>Db: Persist cart item
+    User->>Angular: Open checkout
+    Angular->>PayPalApi: Create PayPal order
+    PayPalApi->>Db: Load active cart total
+    PayPalApi->>PayPal: Create sandbox order
+    PayPal-->>PayPalApi: Order id and approval link
+    PayPalApi-->>Angular: Checkout session
+    User->>PayPal: Approve payment
+    Angular->>PayPalApi: Capture order
+    PayPalApi->>PayPal: Capture sandbox order
+    PayPal-->>PayPalApi: Capture status
+    PayPalApi->>Db: Complete checkout and cart state
+    PayPalApi-->>Angular: Capture result

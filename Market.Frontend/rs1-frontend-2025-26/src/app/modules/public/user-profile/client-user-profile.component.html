@@ -1,0 +1,109 @@
+<app-spinner *ngIf="isLoading" color="#5552ff" class="spinner"></app-spinner>
+
+<div class="state error" *ngIf="!isLoading && errorMessage">
+  {{ errorMessage }}
+</div>
+
+<div class="card" *ngIf="!isLoading && !errorMessage">
+  <div class="content">
+    <div class="wizard">
+      <a>
+        Profile Information
+        <i class="fa fa-exclamation"></i>
+      </a>
+    </div>
+
+    <form novalidate [formGroup]="passwordForm" (ngSubmit)="onPasswordChange()" autocomplete="off">
+      <div class="form-group">
+        <label for="Username">Username</label>
+        <input type="text" id="Username" matInput formControlName="username" readonly />
+
+        <form novalidate [formGroup]="emailForm" (ngSubmit)="onEmailChange()" autocomplete="off">
+          <div class="form-group-email">
+            <label for="Email">Email</label>
+            <input type="email" id="Email" matInput formControlName="email" />
+          </div>
+          <button
+            [disabled]="!emailForm.dirty || !emailForm.valid || isSavingEmail"
+            mat-raised-button
+            class="email-save-btn"
+            type="submit"
+            color="accent"
+          >
+            <i class="fas fa-envelope"></i>
+            {{ isSavingEmail ? 'Saving...' : 'Save Email' }}
+          </button>
+        </form>
+
+        <label for="currentPassword">Current Password</label>
+        <input
+          type="password"
+          id="currentPassword"
+          matInput
+          placeholder="enter your current password"
+          formControlName="currentPassword"
+        />
+
+        <label for="newPassword">New Password</label>
+        <input
+          type="password"
+          id="newPassword"
+          matInput
+          #input
+          placeholder="enter your new password"
+          formControlName="newPassword"
+        />
+        <mat-error class="error" *ngIf="passwordForm.controls.newPassword.hasError('minlength')">
+          New Password must be at least <strong>8 characters. ({{ input.value.length || 0 }}/8)</strong>
+        </mat-error>
+      </div>
+
+      <div class="row">
+        <button
+          [disabled]="!passwordForm.valid || isSavingPassword"
+          mat-raised-button
+          class="password-save-btn"
+          type="submit"
+          color="warn"
+        >
+          <i class="fas fa-key"></i>
+          {{ isSavingPassword ? 'Saving...' : 'Save Password' }}
+        </button>
+        <button
+          [disabled]="!readerResult || isSavingPicture"
+          mat-raised-button
+          class="picture-save-btn"
+          type="button"
+          color="accent"
+          (click)="onPictureChange()"
+        >
+          <i class="fas fa-image"></i>
+          {{ isSavingPicture ? 'Saving...' : 'Save Picture' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="avatar-container">
+    <div
+      class="image-container"
+      *ngIf="imageUrl; else placeholder"
+      [ngStyle]="{ 'background-image': 'url(' + imageUrl + ')' }"
+      [ngClass]="{ 'box-shadow-avatar': imageUrl }"
+    >
+      <div *ngIf="showAlert" class="alert">
+        Invalid file type or no file selected!
+        <span class="close" (click)="closeAlert()">&times;</span>
+      </div>
+    </div>
+    <ng-template #placeholder>
+      <div class="image-container avatar-placeholder"></div>
+    </ng-template>
+    <label for="avatar-input-file">
+      <div class="icon-wrapper">
+        <input type="file" id="avatar-input-file" accept="image/*" (change)="onFileSelected($event)" />
+        <mat-icon matSuffix><i class="fas fa-pen"></i></mat-icon>
+      </div>
+    </label>
+  </div>
+</div>

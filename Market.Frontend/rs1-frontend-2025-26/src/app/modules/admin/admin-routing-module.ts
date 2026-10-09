@@ -2,54 +2,98 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { ProductsComponent } from './catalogs/products/products.component';
-import { ProductsAddComponent } from './catalogs/products/products-add/products-add.component';
-import { ProductsEditComponent } from './catalogs/products/products-edit/products-edit.component';
-import { ProductCategoriesComponent } from './catalogs/product-categories/product-categories.component';
-import {AdminOrdersComponent} from './orders/admin-orders.component';
-import {AdminSettingsComponent} from './admin-settings/admin-settings.component';
+import { CategoriesComponent } from './catalogs/categories/categories.component';
+import { CategoryUpsertComponent } from './catalogs/categories/category-upsert/category-upsert.component';
+import { DirectorsComponent } from './catalogs/directors/directors.component';
+import { DirectorUpsertComponent } from './catalogs/directors/director-upsert/director-upsert.component';
+import { ActorsComponent } from './catalogs/actors/actors.component';
+import { ActorUpsertComponent } from './catalogs/actors/actor-upsert/actor-upsert.component';
+import { MoviesComponent } from './catalogs/movies/movies.component';
+import { MovieUpsertComponent } from './catalogs/movies/movie-upsert/movie-upsert.component';
+import { ReviewsComponent } from './catalogs/reviews/reviews.component';
+import { FavouriteMoviesComponent } from './catalogs/favourite-movies/favourite-movies.component';
+import { ShoppingCartComponent } from './catalogs/shopping-cart/shopping-cart.component';
+import { NotificationsComponent } from './catalogs/notifications/notifications.component';
+import { AdminLauncherComponent } from './admin-launcher/admin-launcher.component';
+import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminLayoutComponent,
     children: [
-      // PRODUCTS
       {
-        path: 'products',
-        component: ProductsComponent,
+        path: '',
+        component: AdminLauncherComponent,
+        pathMatch: 'full',
       },
       {
-        path: 'products/add',
-        component: ProductsAddComponent,
+        path: 'categories',
+        component: CategoriesComponent,
       },
       {
-        path: 'products/:id/edit',
-        component: ProductsEditComponent,
+        path: 'categories/new',
+        component: CategoryUpsertComponent,
       },
-
-      // PRODUCT CATEGORIES
       {
-        path: 'product-categories',
-        component: ProductCategoriesComponent,
+        path: 'categories/:id/edit',
+        component: CategoryUpsertComponent,
       },
-
       {
-        path: 'orders',
-        component: AdminOrdersComponent,
+        path: 'directors',
+        component: DirectorsComponent,
       },
-
+      {
+        path: 'directors/new',
+        component: DirectorUpsertComponent,
+      },
+      {
+        path: 'directors/:id/edit',
+        component: DirectorUpsertComponent,
+      },
+      {
+        path: 'actors',
+        component: ActorsComponent,
+      },
+      {
+        path: 'actors/new',
+        component: ActorUpsertComponent,
+      },
+      {
+        path: 'actors/:id/edit',
+        component: ActorUpsertComponent,
+      },
+      {
+        path: 'movies',
+        component: MoviesComponent,
+      },
+      {
+        path: 'movies/new',
+        component: MovieUpsertComponent,
+      },
+      {
+        path: 'movies/:id/edit',
+        component: MovieUpsertComponent,
+      },
+      {
+        path: 'reviews',
+        component: ReviewsComponent,
+      },
+      {
+        path: 'favourite-movies',
+        component: FavouriteMoviesComponent,
+      },
+      {
+        path: 'shopping-cart',
+        component: ShoppingCartComponent,
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+      },
       {
         path: 'settings',
         component: AdminSettingsComponent,
-      },
-
-
-      // default admin route → /admin/products
-      {
-        path: '',
-        redirectTo: 'products',
-        pathMatch: 'full',
       },
     ],
   },

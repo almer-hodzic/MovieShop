@@ -1,0 +1,13 @@
+.notifications-page { padding: 24px; max-width: 1200px; margin: 0 auto; background: #212121; color: white; }
+.page-header { margin-bottom: 40px; padding: 20px; background: #333333; box-shadow: 0 2px 4px rgba(0, 0, 0, .4); }
+.page-header h1 { margin: 0; font-family: 'Poller One', cursive; color: #6c63ff; }
+.table-card { overflow-x: auto; }
+table { width: 100%; background: #333333; }
+th { color: #6c63ff; }
+td { color: #bbbbbb; }
+tr:hover td { background: #444444; }
+button[mat-stroked-button] { border: 1px solid #6c63ff; color: white; background: #333333; }
+.state, .loading-state { padding: 24px; display: flex; justify-content: center; color: #bbbbbb; }
+.state.error { color: #ff5252; }
+mat-chip.read { background: #444444; color: #bbbbbb; }
+mat-chip.unread { background: #6c63ff; color: white; }

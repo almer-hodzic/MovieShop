@@ -6,26 +6,27 @@ import { CurrentUserService } from '../services/auth/current-user.service';
 export const myAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const currentUser = inject(CurrentUserService);
   const router = inject(Router);
+  const authData = route.data['auth'] ?? route.data;
 
-  const requireAuth = route.data['requireAuth'] === true;
-  const requireAdmin = route.data['requireAdmin'] === true;
-  const requireManager = route.data['requireManager'] === true;
-  const requireEmployee = route.data['requireEmployee'] === true;
+  const requireAuth = authData['requireAuth'] === true;
+  const requireAdmin = authData['requireAdmin'] === true;
+  const requireManager = authData['requireManager'] === true;
+  const requireEmployee = authData['requireEmployee'] === true;
 
   const isAuth = currentUser.isAuthenticated();
 
-  // 1) ako ruta traži auth, a user nije logiran → login
+  // 1) If the route requires auth and the user is not logged in, redirect to login.
   if (requireAuth && !isAuth) {
     router.navigate(['/auth/login']);
     return false;
   }
 
-  // Ako ne traži auth → pusti (javne rute)
+  // Public routes do not require an authenticated user.
   if (!requireAuth) {
     return true;
   }
 
-  // 2) role check – admin > manager > employee
+  // 2) Role check: admin > manager > employee.
   const user = currentUser.snapshot;
   if (!user) {
     router.navigate(['/auth/login']);

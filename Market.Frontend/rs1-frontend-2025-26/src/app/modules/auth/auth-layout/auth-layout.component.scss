@@ -1,0 +1,73 @@
+.showcase::after {
+  content: '';
+  height: 100vh;
+  width: 100%;
+  background-image: url('/assets/img/adult-bar-cafe-cinema.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: block;
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
+}
+
+mat-card {
+  position: absolute;
+  z-index: 1;
+  top: 10%;
+  left: 50%;
+  margin-top: 10px;
+  margin-left: -165px;
+  width: 300px;
+  height: fit-content;
+  padding: 16px 16px 14px;
+  text-align: center;
+  background-color: #212121ef;
+  box-sizing: content-box;
+}
+
+:host ::ng-deep {
+  .mat-mdc-form-field-required-marker {
+    display: none;
+  }
+
+  .mat-mdc-text-field-wrapper,
+  .mat-mdc-form-field-infix {
+    min-height: 52px;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    height: 52px;
+  }
+
+  .mat-mdc-form-field-infix {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  mat-card-title {
+    position: relative;
+    top: -6px;
+    margin-bottom: -3px;
+  }
+
+  .bottom-btns {
+    margin-top: 16px;
+  }
+
+  .bottom-btns .signup {
+    margin-top: 11px;
+  }
+}
+
+@media only screen and (max-height: 600px) {
+  mat-card {
+    top: 1%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  mat-card {
+    top: 1%;
+  }
+}

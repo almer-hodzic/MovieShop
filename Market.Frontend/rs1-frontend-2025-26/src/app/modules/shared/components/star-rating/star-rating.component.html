@@ -1,0 +1,17 @@
+<button
+  mat-icon-button
+  type="button"
+  [color]="color"
+  *ngFor="let ratingId of ratingArr; index as i"
+  [id]="'star_' + i"
+  [class.readonly]="readonly"
+  [attr.aria-readonly]="readonly"
+  (click)="onClick(i + 1)"
+  [matTooltip]="(ratingId + 1).toString()"
+  matTooltipPosition="above"
+>
+  <mat-icon>{{ showIcon(i) }}</mat-icon>
+</button>
+<mat-error *ngIf="starCount == null || starCount === 0">
+  Star count is <strong>required</strong> and cannot be zero
+</mat-error>

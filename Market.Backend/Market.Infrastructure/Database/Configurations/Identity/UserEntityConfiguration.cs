@@ -18,6 +18,9 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUse
         b.Property(x => x.PasswordHash)
             .IsRequired();
 
+        b.Property(x => x.ProfileImage)
+            .HasColumnType("varbinary(max)");
+
         // Roles
         b.Property(x => x.IsAdmin)
             .HasDefaultValue(false);
@@ -33,6 +36,24 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUse
 
         b.Property(x => x.IsEnabled)
             .HasDefaultValue(true);
+
+        b.Property(x => x.IsEmailConfirmed)
+            .HasDefaultValue(false);
+
+        b.Property(x => x.EmailConfirmationTokenHash)
+            .HasMaxLength(128);
+
+        b.Property(x => x.PasswordResetTokenHash)
+            .HasMaxLength(128);
+
+        b.Property(x => x.IsTwoFactorEnabled)
+            .HasDefaultValue(false);
+
+        b.Property(x => x.TwoFactorCodeHash)
+            .HasMaxLength(512);
+
+        b.Property(x => x.TwoFactorFailedAttempts)
+            .HasDefaultValue(0);
 
         // Navigation
         b.HasMany(x => x.RefreshTokens)

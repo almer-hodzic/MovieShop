@@ -1,0 +1,49 @@
+<div class="admin-director">
+  <div class="form-container">
+    <h3>Director Management</h3>
+    <div class="management-tools">
+      <mat-form-field appearance="outline">
+        <mat-label>Director Name</mat-label>
+        <input
+          matInput
+          #searchBox
+          [value]="request.name ?? ''"
+          (keyup.enter)="onSearch(searchBox.value)"
+          placeholder="Director Name"
+        />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="onSearch(searchBox.value)">Search</button>
+      <button mat-raised-button color="primary" type="button" (click)="onCreate()">Add Director</button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="director-list">
+      @for (director of items; track director.id) {
+        <div class="director-card">
+          <div class="director-info">
+            <h4>{{ director.firstName }} {{ director.lastName }}</h4>
+            <p><strong>Birth Date:</strong> {{ director.birthDate | date }}</p>
+            <p><strong>Director ID:</strong> {{ director.id }}</p>
+            <div class="director-actions">
+              <button mat-stroked-button color="primary" type="button" (click)="onEdit(director)">Edit</button>
+              <button mat-stroked-button color="warn" type="button" (click)="onDelete(director)">Delete</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="state">No directors found.</div>
+      }
+    </div>
+
+    <div class="movie-paginator">
+      <button mat-stroked-button type="button" (click)="prevPage()" [disabled]="paging.page <= 1">Previous</button>
+      <span>Page {{ paging.page }} of {{ totalPages || 1 }}</span>
+      <button mat-stroked-button type="button" (click)="nextPage()" [disabled]="paging.page >= totalPages">Next</button>
+    </div>
+  }
+</div>

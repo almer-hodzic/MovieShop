@@ -1,63 +1,49 @@
 import { Injectable, inject } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { IndividualConfig, ToastrService } from 'ngx-toastr';
 
 /**
  * Global toaster service for displaying notifications.
- * Uses Material Snackbar for consistent UI.
+ * Uses the same ngx-toastr presentation as the old MovieShop frontend.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class ToasterService {
-  private snackBar = inject(MatSnackBar);
-
-  private defaultConfig: MatSnackBarConfig = {
-    duration: 3000,
-    horizontalPosition: 'end',
-    verticalPosition: 'top'
-  };
+  private toastr = inject(ToastrService);
 
   /**
    * Show success message (green)
    */
   success(message: string, duration?: number): void {
-    this.snackBar.open(message, 'Close', {
-      ...this.defaultConfig,
-      duration: duration ?? this.defaultConfig.duration,
-      panelClass: ['snackbar-success']
-    });
+    this.toastr.success(message, undefined, this.durationOptions(duration));
   }
 
   /**
    * Show error message (red)
    */
   error(message: string, duration?: number): void {
-    this.snackBar.open(message, 'Close', {
-      ...this.defaultConfig,
-      duration: duration ?? this.defaultConfig.duration,
-      panelClass: ['snackbar-error']
-    });
+    this.toastr.error(message, undefined, this.durationOptions(duration));
   }
 
   /**
    * Show warning message (orange)
    */
   warning(message: string, duration?: number): void {
-    this.snackBar.open(message, 'Close', {
-      ...this.defaultConfig,
-      duration: duration ?? this.defaultConfig.duration,
-      panelClass: ['snackbar-warning']
-    });
+    this.toastr.warning(message, undefined, this.durationOptions(duration));
   }
 
   /**
    * Show info message (blue)
    */
   info(message: string, duration?: number): void {
-    this.snackBar.open(message, 'Close', {
-      ...this.defaultConfig,
-      duration: duration ?? this.defaultConfig.duration,
-      panelClass: ['snackbar-info']
-    });
+    this.toastr.info(message, undefined, this.durationOptions(duration));
+  }
+
+  clear(): void {
+    this.toastr.clear();
+  }
+
+  private durationOptions(duration?: number): Partial<IndividualConfig> | undefined {
+    return duration === undefined ? undefined : { timeOut: duration };
   }
 }

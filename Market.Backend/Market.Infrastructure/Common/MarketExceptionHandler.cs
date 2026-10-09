@@ -40,6 +40,9 @@ public sealed class MarketExceptionHandler(
         ctx.Response.ContentType = "application/json";
         ctx.Response.StatusCode = ex switch
         {
+            MarketBadRequestException => StatusCodes.Status400BadRequest,
+            MarketUnauthorizedException => StatusCodes.Status401Unauthorized,
+            MarketForbiddenException => StatusCodes.Status403Forbidden,
             MarketNotFoundException => StatusCodes.Status404NotFound,
             MarketConflictException or MarketBusinessRuleException => StatusCodes.Status409Conflict,
             ValidationException => StatusCodes.Status400BadRequest,
@@ -59,6 +62,21 @@ public sealed class MarketExceptionHandler(
 
         switch (ex)
         {
+            case MarketUnauthorizedException:
+                code = "auth.unauthorized";
+                message = ex.Message;
+                break;
+
+            case MarketForbiddenException:
+                code = "auth.forbidden";
+                message = ex.Message;
+                break;
+
+            case MarketBadRequestException:
+                code = "request.invalid";
+                message = ex.Message;
+                break;
+
             case MarketNotFoundException:
             case MarketConflictException:
             case MarketBusinessRuleException:

@@ -1,0 +1,50 @@
+<section class="actor-dialog">
+  <header>
+    <div>
+      <h1>{{ actorName }}</h1>
+      <p *ngIf="data.characterName">as {{ data.characterName }}</p>
+    </div>
+    <button mat-icon-button [mat-dialog-close]="true" class="close-button" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  <hr class="dialog-divider" />
+
+  <mat-dialog-content>
+    <div class="actor-info">
+      <img
+        [src]="getActorProfileImage(data.photo)"
+        [alt]="actorName"
+        class="actor-image"
+        (error)="imageResolver.useActorFallback($event)"
+      />
+      <div class="actor-details">
+        <dl>
+          <div>
+            <dt>Birth</dt>
+            <dd>{{ data.birthDate | date: 'mediumDate' }}</dd>
+          </div>
+          <div *ngIf="data.countryId">
+            <dt>Country ID</dt>
+            <dd>{{ data.countryId }}</dd>
+          </div>
+        </dl>
+
+        <a *ngIf="imdbUrl" [href]="imdbUrl" target="_blank" rel="noopener" class="actor-imdb" title="Visit IMDb">
+          <i class="fab fa-imdb fa-2x"></i>
+          IMDb
+        </a>
+      </div>
+    </div>
+
+    <section class="actor-biography" *ngIf="data.biography; else noBiography">
+      <h2>Biography</h2>
+      <p>{{ data.biography }}</p>
+    </section>
+
+    <ng-template #noBiography>
+      <p class="empty-biography">No biography available.</p>
+    </ng-template>
+  </mat-dialog-content>
+</section>

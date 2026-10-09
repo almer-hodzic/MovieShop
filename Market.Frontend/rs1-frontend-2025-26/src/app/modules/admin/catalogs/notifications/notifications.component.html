@@ -1,0 +1,74 @@
+<div class="notifications-page">
+  <div class="page-header">
+    <h1>My Notifications</h1>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="table-card">
+      <table mat-table [dataSource]="items">
+        <ng-container matColumnDef="notificationId">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let item">{{ item.notificationId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="notificationText">
+          <th mat-header-cell *matHeaderCellDef>Text</th>
+          <td mat-cell *matCellDef="let item">{{ item.notificationText }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="movieId">
+          <th mat-header-cell *matHeaderCellDef>Movie Id</th>
+          <td mat-cell *matCellDef="let item">{{ item.movieId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="notificationDate">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let item">{{ item.notificationDate | date: 'medium' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="isRead">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let item">
+            <mat-chip [class.read]="item.isRead" [class.unread]="!item.isRead">
+              {{ item.isRead ? 'Read' : 'Unread' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let item">
+            <button
+              mat-stroked-button
+              color="primary"
+              type="button"
+              [disabled]="item.isRead"
+              (click)="onMarkAsRead(item)"
+            >
+              Mark As Read
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              aria-label="Delete notification"
+              (click)="onDelete(item)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr *matNoDataRow>
+          <td [attr.colspan]="displayedColumns.length" class="state">No notifications found.</td>
+        </tr>
+      </table>
+    </div>
+  }
+</div>

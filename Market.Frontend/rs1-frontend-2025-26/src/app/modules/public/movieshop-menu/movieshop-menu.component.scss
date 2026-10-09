@@ -1,0 +1,144 @@
+toolbar{
+  position: relative;
+  height: 40px;
+  min-height: 40px;
+  z-index: 10;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.title{
+  font-family: 'Poller One', cursive;
+  color: #6C63FF;
+  font-size: 18px;
+}
+
+.active{
+  color: #6C63FF;
+  font-weight: bold;
+}
+
+.menu-item{
+  margin-left: 8px;
+}
+
+.username{
+  font-weight: bold;
+  color: #6C63FF;
+}
+
+.git-btn{
+  text-decoration: none;
+}
+
+.welcome{
+  gap: 4px;
+  font-size: 15px;
+}
+
+.mat-menu-item:hover {
+  background: #6C63FF;
+  color: aliceblue;
+}
+
+.notification-button {
+  margin-right: 17px;
+}
+
+:host ::ng-deep .notification-button .mat-badge-content {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  color: #fff !important;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 22px;
+  text-align: center;
+}
+
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-simple {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+}
+
+/* Angular Material 21 compatibility for the old Material 8 menu rendering. */
+:host ::ng-deep .mat-toolbar {
+  display: flex;
+  align-items: center;
+  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+}
+
+:host ::ng-deep .mat-toolbar > span:not(.spacer),
+.icons-container {
+  display: inline-flex;
+  align-items: center;
+}
+
+:host ::ng-deep .mat-mdc-button,
+:host ::ng-deep .mat-mdc-raised-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 64px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 36px;
+  letter-spacing: normal;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .mat-mdc-button .mdc-button__label,
+:host ::ng-deep .mat-mdc-raised-button .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+}
+
+:host ::ng-deep .mat-mdc-raised-button.active {
+  color: #fff;
+}
+
+:host ::ng-deep button.title.mat-mdc-button {
+  color: #6C63FF;
+  font-family: 'Poller One', cursive;
+  font-size: 18px;
+  line-height: 36px;
+}
+
+:host ::ng-deep .mat-mdc-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font: 500 14px/40px Roboto, "Helvetica Neue", sans-serif;
+  line-height: 40px;
+  --mat-icon-button-state-layer-size: 40px;
+  --mat-icon-button-touch-target-display: none;
+}
+
+:host ::ng-deep .mat-mdc-icon-button .mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep #google_translate_element .goog-te-combo {
+  display: none;
+}

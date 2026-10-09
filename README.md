@@ -1,83 +1,141 @@
-# Market Frontend - Brzi Vodič
+# MovieShop
 
-Angular admin panel za upravljanje proizvodima i narudžbama.
+MovieShop is an RS1 full-stack web application for browsing movies, managing favourites and a shopping cart, and completing sandbox checkout through PayPal. The administrative area manages the movie catalog, people, reviews, notifications, dashboard statistics, and account settings.
 
----
+## Architecture
 
-## ⚡ Brzo Pokretanje
+The backend is organized as a Clean Architecture solution:
 
-### Preduvjeti
-- Node.js 18+
-- Backend API mora biti pokrenut na `https://localhost:7260`
+- `Market.Domain` contains entities for identity, movies, categories, actors, directors, reviews, notifications, favourites, shopping carts, cart items, and refresh tokens.
+- `Market.Application` contains CQRS commands and queries, validators, DTOs, and service abstractions.
+- `Market.Infrastructure` contains EF Core, SQL Server configuration, migrations, database initialization, seeding, JWT, PayPal, email delivery, and current-user infrastructure.
+- `Market.API` contains controllers, authentication/authorization, Swagger, CORS, exception handling, and request logging.
+- `Market.Tests` contains integration and flow tests for active MovieShop features.
 
-### Instalacija i Pokretanje
+The frontend is an Angular non-standalone application. It uses modules, lazy-loaded routes, API service classes, Reactive Forms with validators, route guards, and HTTP interceptors/services for authenticated workflows.
 
-```bash
-# 1. Instaliraj dependencies
+## Technologies
+
+- ASP.NET Core Web API
+- Entity Framework Core with SQL Server
+- MediatR-style CQRS
+- FluentValidation
+- JWT access tokens and refresh tokens
+- Angular 21
+- Angular Material
+- Reactive Forms
+- PayPal sandbox integration
+- SendGrid or development email fallback
+- xUnit integration tests
+
+## Repository Structure
+
+```text
+MovieShop/
+  Market.Backend/
+    Market.Backend.sln
+    Market.API/
+    Market.Application/
+    Market.Domain/
+    Market.Infrastructure/
+    Market.Shared/
+    Market.Tests/
+  Market.Frontend/
+    rs1-frontend-2025-26/
+      angular.json
+      package.json
+      src/
+  db-backups/
+  dokumenti/
+  README.md
+```
+
+## Backend Startup
+
+```powershell
+cd Market.Backend
+dotnet restore
+dotnet build
+dotnet run --project Market.API
+```
+
+The API reads `appsettings.json`, `appsettings.Development.json`, environment variables, and development User Secrets. Do not store real PayPal, SendGrid, SMTP, JWT, or database passwords in tracked files.
+
+## Frontend Startup
+
+```powershell
+cd Market.Frontend\rs1-frontend-2025-26
 npm install
-
-# 2. Pokreni development server
 npm start
 ```
 
-**Aplikacija će se otvoriti na**: `http://localhost:4200`
+The Angular app runs on `http://localhost:4200` and expects the backend API URL configured in `src/environments/environment*.ts`.
 
----
+## SQL Server and Database
 
-## 🔐 Pristupni Podaci
+The default connection string targets:
 
-```
-Email: admin@market.local
-Lozinka: Admin123!
-```
-
-Ostali korisnici:
-- `manager@market.local` / `Manager123!`
-- `employee@market.local` / `Employee123!`
-- `string` / `string` (za Swagger testiranje)
-
----
-
-## 📁 Mogućnosti
-
-✅ **Kategorije Proizvoda** - CRUD operacije  
-✅ **Proizvodi** - Kompletan menadžment sa zalihama i cijenama  
-✅ **Narudžbe** - Pregled, filtriranje, promjena statusa  
-✅ **Višejezičnost** - Engleski i Bosanski  
-✅ **Responsive** - Mobilni, tablet, desktop  
-
----
-
-## 🛠️ Komande
-
-```bash
-npm install          # Instaliraj dependencies
-npm start            # Pokreni dev server (port 4200)
-ng build             # Build za produkciju
+```text
+Server=localhost;Database=MovieShopDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True
 ```
 
----
+Create or restore `MovieShopDb` in SQL Server before running the API. In non-development environments, startup applies EF Core migrations by default. In Development, `appsettings.Development.json` currently sets:
 
+```json
+{
+  "DatabaseStartup": {
+    "ApplyMigrationsOnStartup": false,
+    "SeedOnStartup": false
+  }
+}
+```
 
-## 📸 Screenshotovi
+That means development startup does not automatically modify the database unless those flags are changed.
 
-### Prijava
-![Prijava](Market.Frontend/preview-template-orders.png)
+## Seeded Accounts
 
-### Kategorije Proizvoda
-![Kategorije](Market.Frontend/preview-template-product-category-edit.png)
+When development/test seeding is enabled, the application seeds:
 
-### Upravljanje Proizvodima
-![Proizvodi](Market.Frontend/preview-template-product-edit.png)
+```text
+Admin:
+admin@market.local
+Admin123!
 
-### Narudžbe Dashboard
-![Narudžbe](Market.Frontend/preview-template-orders.png)
+User:
+user@market.local
+User123!
+```
 
-### Detalji Narudžbe
-![Detalji Narudžbe](Market.Frontend/preview-template-order-details.png)
+## Build and Test Commands
 
-### Promjena Statusa Narudžbe
-![Promjena Statusa](Market.Frontend/preview-template-order-change-status.png)
+```powershell
+cd Market.Backend
+dotnet build
+dotnet test
 
----
+cd ..\Market.Frontend\rs1-frontend-2025-26
+npm run build
+```
 
+## Feature Overview
+
+- Authentication: register, email confirmation, login, JWT, refresh token, forgot password, reset password, and two-factor verification.
+- Public MovieShop: welcome page, movie browse, movie details, favourites, shopping cart, checkout, profile, and video player.
+- Payments: PayPal sandbox order creation and capture.
+- Notifications: admin creates notifications, users receive them, mark read/unread, and delete.
+- Admin: dashboard, settings, movies, categories, actors, directors, reviews, notifications, favourites, and shopping-cart administration.
+
+## Email Development Behavior
+
+Development email can use a complete local SMTP configuration, SendGrid when a real API key is provided, or a console/log fallback. Tracked configuration contains placeholders only.
+
+## PayPal Sandbox Note
+
+PayPal is configured for sandbox mode by default. Set `PayPal:ClientId` and `PayPal:ClientSecret` through User Secrets or environment variables, never in tracked source.
+
+## Known Limitations
+
+- Development startup currently skips migrations and seeding unless explicitly enabled.
+- PayPal uses sandbox endpoints only.
+- Email delivery in development may fall back to logs when SMTP or SendGrid is not configured.
+- Old EF migrations may still contain historical table names from the template, but active controllers/modules/entities are MovieShop-focused.

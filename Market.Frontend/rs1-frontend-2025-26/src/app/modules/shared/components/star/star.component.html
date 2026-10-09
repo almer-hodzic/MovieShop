@@ -1,0 +1,19 @@
+<div class="star-meter" [title]="rating">
+  <div class="star-track" aria-hidden="true">
+    <span class="fa fa-star"></span>
+    <span class="fa fa-star"></span>
+    <span class="fa fa-star"></span>
+    <span class="fa fa-star"></span>
+    <span class="fa fa-star"></span>
+  </div>
+  <div class="crop" [style.width.px]="starWidth" aria-hidden="true">
+    <div class="star-fill">
+      <span class="fa fa-star"></span>
+      <span class="fa fa-star"></span>
+      <span class="fa fa-star"></span>
+      <span class="fa fa-star"></span>
+      <span class="fa fa-star"></span>
+    </div>
+  </div>
+  <span class="sr-only">{{ rating }} out of 5 stars</span>
+</div>

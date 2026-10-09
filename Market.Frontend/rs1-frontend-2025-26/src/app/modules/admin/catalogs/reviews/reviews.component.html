@@ -1,0 +1,45 @@
+<div class="review-management">
+  <h2>Review Management</h2>
+  <div class="form-container"></div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="review-list">
+      <table>
+        <thead>
+          <tr>
+            <th>Review Date</th>
+            <th>User</th>
+            <th>Movie</th>
+            <th>Score</th>
+            <th>Comment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (review of reviews; track review.id) {
+            <tr>
+              <td>{{ review.reviewDate | date: 'medium' }}</td>
+              <td>{{ review.userName }}</td>
+              <td>{{ review.movieTitle }}</td>
+              <td>{{ review.score }}</td>
+              <td>{{ review.comment }}</td>
+              <td>
+                <button class="delete-btn" type="button" [disabled]="isDeletingReview(review.id)" (click)="deleteReview(review.id)">
+                  {{ isDeletingReview(review.id) ? 'Deleting...' : 'Delete' }}
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="state">No reviews found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

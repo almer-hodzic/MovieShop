@@ -1,0 +1,123 @@
+* { box-sizing: border-box; margin: 0; }
+
+.movie_card {
+  position: relative;
+  display: block;
+  max-width: 800px;
+  height: 350px;
+  margin: 50px auto;
+  overflow: hidden;
+  border-radius: 10px;
+
+  .info_section {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-blend-mode: multiply;
+    z-index: 2;
+    border-radius: 10px;
+
+    .movie_header {
+      position: relative;
+      padding: 25px;
+      height: 40%;
+      h1 { font-size: 18px; color: #fff; font-weight: 400; }
+      h4 { color: #9ac7fa; font-weight: 400; }
+      .date { color: #a5fa9a; }
+      .minutes {
+        display: inline-block;
+        margin-top: 10px;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid rgba(60,171,235,.616);
+      }
+      .mpaa {
+        display: inline-block;
+        margin-top: 10px;
+        margin-left: 2px;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid rgba(228,46,46,.568);
+      }
+      .locandina {
+        position: relative;
+        float: left;
+        margin-right: 20px;
+        height: 120px;
+        box-shadow: 0 0 20px -10px rgba(0,0,0,.5);
+      }
+    }
+
+    .movie_desc { padding: 25px; height: 40%; .text { color: #cfd6e1; } }
+    .movie_social {
+      display: flex;
+      align-items: center;
+      margin-top: 17px;
+      margin-left: 5px;
+      padding-left: 15px;
+      padding-bottom: 20px;
+    }
+  }
+
+  .blur_back {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    height: 100%;
+    background-size: cover;
+    border-radius: 11px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .movie_header { width: 60%; }
+  .movie_desc { width: 50%; }
+  .info_section { background: linear-gradient(to right, #0d0d0c 50%, transparent 100%); }
+  .blur_back { width: 80%; background-position: -100% 10% !important; }
+}
+
+@media screen and (max-width: 768px) {
+  .movie_card { width: 95%; margin: 70px auto; min-height: 350px; height: auto; }
+  .blur_back { width: 100%; background-position: 50% 50% !important; }
+  .movie_header { width: 100%; margin-top: 85px; }
+  .movie_desc { width: 100%; }
+  .info_section { background: linear-gradient(to top, rgb(20,20,19) 50%, transparent 100%); display: inline-grid; }
+}
+
+#bright:hover { box-shadow: 0 0 150px -45px #5552ff7a; }
+.title { cursor: pointer; }
+
+/* Material 21 compatibility with the old Material 8 intrinsic button boxes. */
+.movie_social button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: top;
+  line-height: normal;
+}
+
+:host ::ng-deep .movie_social button .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  line-height: normal;
+}
+
+.movie_social button i,
+.movie_social button span {
+  line-height: 1;
+}
+
+.movie_social button:first-child {
+  width: 92.6875px;
+}
+
+.movie_social button:nth-child(2) {
+  width: 120.34375px;
+  height: 37.375px;
+}

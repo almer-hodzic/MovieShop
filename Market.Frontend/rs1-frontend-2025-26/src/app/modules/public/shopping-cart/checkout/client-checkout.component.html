@@ -1,0 +1,33 @@
+<app-spinner *ngIf="isLoading || isCreatingPayPalOrder || isCapturingPayment" color="#5552ff" class="spinner"></app-spinner>
+
+<div class="checkout-container">
+  <h2>Checkout</h2>
+
+  <div *ngIf="!isLoading && errorMessage" class="state error">{{ errorMessage }}</div>
+  <div *ngIf="!isLoading && !errorMessage && cartItems.length === 0" class="state">Your cart is empty.</div>
+
+  <div *ngIf="!isLoading && !errorMessage && cartItems.length > 0">
+    <ul>
+      <li *ngFor="let item of cartItems">
+        {{ item.movieTitle }} - {{ item.totalPrice | currency: 'USD' : 'symbol' : '1.2-2' }}
+      </li>
+    </ul>
+    <h3>Total: {{ totalPrice | currency: 'USD' : 'symbol' : '1.2-2' }}</h3>
+  </div>
+
+  <ng-container *ngIf="!isLoading && !errorMessage && cartItems.length > 0">
+    <h3>Select Payment Method:</h3>
+    <div class="payment-options">
+      <div class="payment-option" [class.selected]="selectedPaymentMethod === 'paypal'" (click)="selectPaymentMethod('paypal')">
+        <img src="https://gymbeam.ba/media/wysiwyg/cms_pages/pngwing.com_resize_80-gen.png" alt="PayPal" />
+        <p>PayPal</p>
+      </div>
+    </div>
+
+    <div *ngIf="selectedPaymentMethod === 'paypal'" class="paypal-button-container">
+      <div *ngIf="isCreatingPayPalOrder" class="paypal-state">Preparing PayPal checkout...</div>
+      <div *ngIf="isCapturingPayment" class="paypal-state">Completing payment...</div>
+      <div id="paypal-button-container"></div>
+    </div>
+  </ng-container>
+</div>

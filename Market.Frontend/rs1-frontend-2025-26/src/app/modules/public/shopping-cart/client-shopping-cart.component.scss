@@ -1,0 +1,79 @@
+.shopping-cart-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #212121;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, .9);
+  color: #fff;
+}
+
+h2 { margin-bottom: 20px; text-align: center; }
+.empty-cart { text-align: center; }
+.empty-cart.error { color: #ffb3b3; }
+.cart-items { display: flex; flex-direction: column; }
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #212121;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .9);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.movie-image {
+  width: 70px;
+  min-height: 105px;
+  align-self: stretch;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.item-details { padding: 15px; flex-grow: 1; }
+.item-details p { margin: 5px 0; }
+.remove-button {
+  padding: 5px 20px;
+  margin-right: 20px;
+  background-color: #ff5555;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color .3s ease;
+}
+.remove-button:hover:not(:disabled) { background-color: #c00; }
+.quantity-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.quantity-row input {
+  width: 55px;
+  height: 28px;
+  border: 1px solid #5452ff;
+  border-radius: 3px;
+  color: #fff;
+  background: #5c6664;
+  padding: 0 5px;
+}
+.update-button, .clear-button, .checkout-button {
+  padding: 6px 18px;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+.update-button, .checkout-button { background-color: #6c63ff; }
+.clear-button { background-color: #555; }
+.cart-total { text-align: right; }
+.cart-actions { display: flex; justify-content: flex-end; gap: 10px; }
+button:disabled { cursor: default; opacity: .65; }
+.spinner { position: fixed; top: 50%; left: 50%; z-index: 100; }
+
+@media (max-width: 560px) {
+  .shopping-cart-container { margin: 15px 8px; padding: 12px; }
+  .cart-item { flex-wrap: wrap; }
+  .item-details { min-width: calc(100% - 90px); }
+  .remove-button { margin: 0 15px 15px auto; }
+  .quantity-row { flex-wrap: wrap; }
+  .cart-actions { justify-content: center; }
+}

@@ -1,0 +1,259 @@
+fieldset {
+  padding: 0 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.form-group-email {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -30px;
+}
+
+.fa-exclamation {
+  color: red;
+}
+
+.mat-icon {
+  position: absolute;
+  font-size: 15px;
+  height: 40px;
+  width: 40px;
+  padding: 0.35rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.wizard a {
+  background: #5452ff;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 10px;
+  min-width: 150px;
+  outline: none;
+  padding: 10px 40px 10px;
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+}
+
+.avatar-container {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  margin-right: 50px;
+}
+
+.image-container {
+  height: 200px;
+  width: 200px;
+  z-index: 1;
+  border-radius: 50%;
+  background-color: #fff;
+  background-position: center;
+  background-size: cover;
+}
+
+.icon-wrapper {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  padding: 0.35rem;
+  background-color: #2962ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 150px;
+  right: 10px;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.icon-wrapper:hover {
+  transition: all 0.25s;
+  background-color: #003edb;
+}
+
+.icon-wrapper input[type='file'] {
+  display: none;
+}
+
+.wizard a:hover {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.wizard a:before {
+  width: 0;
+  height: 0;
+  border-top: 20px inset transparent;
+  border-bottom: 20px inset transparent;
+  border-left: 20px solid #212121;
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+}
+
+.wizard a:after {
+  width: 0;
+  height: 0;
+  border-top: 20px inset transparent;
+  border-bottom: 20px inset transparent;
+  border-left: 21px solid #5452ff;
+  position: absolute;
+  content: '';
+  top: 0;
+  right: -20px;
+  z-index: 2;
+}
+
+.wizard a:first-child:before,
+.wizard a:last-child:after {
+  border: none;
+}
+
+.wizard a:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.wizard a:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.card {
+  max-width: 800px;
+  min-height: 350px;
+  margin: 20px auto;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  background: var(--background-color, #212121);
+  border: 1px solid transparent;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8), 0 6px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  padding: 10px;
+  color: #ffffff;
+}
+
+.row {
+  margin: 20px 0;
+}
+
+.alert {
+  position: absolute;
+  bottom: 200px;
+  right: -44px;
+  padding: 8px 20px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  width: 145%;
+}
+
+.close {
+  position: absolute;
+  top: 7px;
+  right: 15px;
+  padding: 1px 0;
+  cursor: pointer;
+}
+
+input {
+  width: 400px;
+  height: 40px;
+  padding: 0 5px;
+  margin-bottom: 25px;
+  font-size: 17px;
+  border: 1px solid #5452ff;
+  color: white;
+  background: #5c6664;
+  box-sizing: border-box;
+}
+
+input[readonly],
+input:disabled {
+  opacity: 0.85;
+}
+
+::placeholder {
+  color: #9da3a2;
+  opacity: 1;
+}
+
+.error {
+  margin-top: -20px;
+}
+
+.password-save-btn {
+  bottom: 5px !important;
+  margin-right: 10px !important;
+}
+
+.email-save-btn {
+  bottom: -232px !important;
+  margin-left: 153px !important;
+}
+
+.picture-save-btn {
+  bottom: 5px !important;
+  margin-left: 124px !important;
+}
+
+button i {
+  margin-bottom: 2px;
+}
+
+.state {
+  color: #ffffff;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.state.error {
+  color: #ffb3b3;
+}
+
+.spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+}
+
+@media (max-width: 760px) {
+  .card {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+  .avatar-container {
+    margin: 10px auto 30px;
+  }
+
+  input {
+    width: min(400px, 100%);
+  }
+
+  .email-save-btn,
+  .picture-save-btn {
+    margin-left: 0 !important;
+  }
+}

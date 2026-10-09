@@ -1,1 +1,50 @@
-<p>admin-settings works!</p>
+<div class="admin-settings">
+  <div class="settings-header">
+    <div>
+      <h1>Admin Settings</h1>
+      <p *ngIf="settings">{{ settings.email }}</p>
+    </div>
+    <button mat-stroked-button type="button" routerLink="/admin">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="state">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Loading settings...</span>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="state error">
+    <span>{{ errorMessage }}</span>
+    <button mat-stroked-button type="button" (click)="loadSettings()">Retry</button>
+  </div>
+
+  <form *ngIf="!isLoading && !errorMessage" [formGroup]="form" (ngSubmit)="save()" class="settings-form">
+    <mat-form-field appearance="fill">
+      <mat-label>First name</mat-label>
+      <input matInput formControlName="firstname" autocomplete="given-name">
+      <mat-error *ngIf="form.controls.firstname.hasError('required')">First name is required.</mat-error>
+      <mat-error *ngIf="form.controls.firstname.hasError('maxlength')">First name can be at most 100 characters long.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Last name</mat-label>
+      <input matInput formControlName="lastname" autocomplete="family-name">
+      <mat-error *ngIf="form.controls.lastname.hasError('required')">Last name is required.</mat-error>
+      <mat-error *ngIf="form.controls.lastname.hasError('maxlength')">Last name can be at most 100 characters long.</mat-error>
+    </mat-form-field>
+
+    <div class="readonly-info" *ngIf="settings">
+      <span>Role: Admin</span>
+      <span>Status: {{ settings.isEnabled ? 'Enabled' : 'Disabled' }}</span>
+    </div>
+
+    <div class="form-actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="isSaving">
+        <mat-icon>save</mat-icon>
+        {{ isSaving ? 'Saving...' : 'Save Settings' }}
+      </button>
+    </div>
+  </form>
+</div>

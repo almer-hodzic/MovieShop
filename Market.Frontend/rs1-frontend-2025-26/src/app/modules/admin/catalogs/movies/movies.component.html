@@ -1,0 +1,64 @@
+<div class="movie-management">
+  <h2>Movie Management</h2>
+
+  <div class="form-container">
+    <h3>Manage Movies</h3>
+    <div class="management-tools">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input
+          matInput
+          #searchBox
+          [value]="request.title ?? ''"
+          (keyup.enter)="onSearch(searchBox.value)"
+          placeholder="Title"
+        />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="onSearch(searchBox.value)">Search</button>
+      <button mat-raised-button color="primary" type="button" (click)="onCreate()">Add Movie</button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="movie-list">
+      @for (movie of items; track movie.id) {
+        <div class="movie-card">
+          <div class="movie-info">
+            <h3>{{ movie.title }}</h3>
+            <p>{{ movie.storyLine }}</p>
+            <p><strong>Price:</strong> {{ movie.price | currency }}</p>
+            <p><strong>Release Date:</strong> {{ movie.releaseDate | date }}</p>
+            <p><strong>Duration:</strong> {{ movie.duration }} minutes</p>
+            <p><strong>Director:</strong> {{ movie.directorName }}</p>
+            <div class="movie-actions">
+              <button mat-stroked-button color="primary" type="button" (click)="onEdit(movie)">Edit</button>
+              <button
+                mat-icon-button
+                type="button"
+                color="accent"
+                matTooltip="Add to favourites"
+                [disabled]="isFavourite(movie)"
+                (click)="onAddToFavourites(movie)"
+              >
+                <mat-icon>{{ isFavourite(movie) ? 'favorite' : 'favorite_border' }}</mat-icon>
+              </button>
+              <button mat-stroked-button color="warn" type="button" (click)="onDelete(movie)">Delete</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="state">No movies found.</div>
+      }
+    </div>
+
+    <div class="movie-paginator">
+      <button mat-stroked-button type="button" (click)="prevPage()" [disabled]="paging.page <= 1">Previous</button>
+      <span>Page {{ paging.page }} of {{ totalPages || 1 }}</span>
+      <button mat-stroked-button type="button" (click)="nextPage()" [disabled]="paging.page >= totalPages">Next</button>
+    </div>
+  }
+</div>

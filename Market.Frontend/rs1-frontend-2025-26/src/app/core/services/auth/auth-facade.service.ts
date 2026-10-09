@@ -1,7 +1,7 @@
 // src/app/core/services/auth/auth-facade.service.ts
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of, tap, catchError, map } from 'rxjs';
+import { Observable, of, tap, catchError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
 import { AuthApiService } from '../../../api-services/auth/auth-api.service';
@@ -11,6 +11,7 @@ import {
   LogoutCommand,
   RefreshTokenCommand,
   RefreshTokenCommandDto,
+  VerifyTwoFactorCommand,
 } from '../../../api-services/auth/auth-api.model';
 
 import { AuthStorageService } from './auth-storage.service';
@@ -60,13 +61,22 @@ export class AuthFacadeService {
    * Login korisnika (email + password).
    * Snima tokene u storage, dekodira JWT i popunjava current user state.
    */
-  login(payload: LoginCommand): Observable<void> {
+  login(payload: LoginCommand): Observable<LoginCommandDto> {
     return this.api.login(payload).pipe(
       tap((response: LoginCommandDto) => {
+        if (response.requiresTwoFactor) return;
         this.storage.saveLogin(response);           // access + refresh + expiries
         this.decodeAndSetUser(response.accessToken); // popuni _currentUser
-      }),
-      map(() => void 0)
+      })
+    );
+  }
+
+  verifyTwoFactor(payload: VerifyTwoFactorCommand): Observable<LoginCommandDto> {
+    return this.api.verifyTwoFactor(payload).pipe(
+      tap((response: LoginCommandDto) => {
+        this.storage.saveLogin(response);
+        this.decodeAndSetUser(response.accessToken);
+      })
     );
   }
 
@@ -110,7 +120,7 @@ export class AuthFacadeService {
    */
   redirectToLogin(): void {
     this.clearUserState();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
   // =========================================================
@@ -151,10 +161,21 @@ export class AuthFacadeService {
   private decodeAndSetUser(token: string): void {
     try {
       const payload = jwtDecode<JwtPayloadDto>(token);
+      const email = payload.email ??
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ??
+        '';
+      const userId = payload.sub ??
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
+        payload.nameid ??
+        payload.userId;
+
+      if (!userId) {
+        throw new Error('JWT token does not contain a user identifier claim.');
+      }
 
       const user: CurrentUserDto = {
-        userId: Number(payload.sub),
-        email: payload.email,
+        userId: Number(userId),
+        email,
         isAdmin: payload.is_admin === 'true',
         isManager: payload.is_manager === 'true',
         isEmployee: payload.is_employee === 'true',

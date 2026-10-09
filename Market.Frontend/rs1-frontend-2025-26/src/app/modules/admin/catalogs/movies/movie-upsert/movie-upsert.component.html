@@ -1,0 +1,185 @@
+<div class="upsert-page">
+  <div class="title-row">
+    <h1>{{ title }}</h1>
+  </div>
+
+  <div class="form-container">
+      @if (isLookupsLoading) {
+        <div class="lookup-state">Loading lookup data...</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" maxlength="200" />
+          <mat-error *ngIf="hasError('title')">
+            {{ getErrorMessage('title') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Release Date</mat-label>
+          <input matInput [matDatepicker]="releaseDatePicker" formControlName="releaseDate" />
+          <mat-datepicker-toggle matSuffix [for]="releaseDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #releaseDatePicker></mat-datepicker>
+          <mat-error *ngIf="hasError('releaseDate')">
+            {{ getErrorMessage('releaseDate') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Duration (minutes)</mat-label>
+          <input matInput type="number" min="1" formControlName="duration" />
+          <mat-error *ngIf="hasError('duration')">
+            {{ getErrorMessage('duration') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Director</mat-label>
+          <mat-select formControlName="directorId">
+            @for (director of directorOptions; track director.id) {
+              <mat-option [value]="director.id">
+                {{ director.firstName }} {{ director.lastName }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-error *ngIf="hasError('directorId')">
+            {{ getErrorMessage('directorId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Categories</mat-label>
+          <mat-select formControlName="categories" multiple>
+            @for (category of categoryOptions; track category.id) {
+              <mat-option [value]="category.id">
+                {{ category.categoryName }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-error *ngIf="hasError('categories')">
+            {{ getErrorMessage('categories') }}
+          </mat-error>
+        </mat-form-field>
+
+        <div class="actors-section">
+          <div class="actors-header">
+            <h3>Actors</h3>
+            <button mat-stroked-button type="button" (click)="addActor()">
+              <mat-icon>add</mat-icon>
+              Add Actor
+            </button>
+          </div>
+
+          <div formArrayName="actors" class="actor-list">
+            @for (actorGroup of actorsArray.controls; track $index; let i = $index) {
+              <div class="actor-row" [formGroupName]="i">
+                <mat-form-field appearance="outline">
+                  <mat-label>Actor</mat-label>
+                  <mat-select formControlName="actorId">
+                    @for (actor of actorOptions; track actor.id) {
+                      <mat-option [value]="actor.id">
+                        {{ actorDisplayName(actor) }}
+                      </mat-option>
+                    }
+                  </mat-select>
+                  <mat-error *ngIf="actorGroup.get('actorId')?.touched && actorGroup.get('actorId')?.invalid">
+                    Actor is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Character Name</mat-label>
+                  <input matInput formControlName="characterName" maxlength="150" />
+                  <mat-error
+                    *ngIf="
+                      actorGroup.get('characterName')?.touched &&
+                      actorGroup.get('characterName')?.hasError('required')
+                    "
+                  >
+                    Character name is required.
+                  </mat-error>
+                  <mat-error
+                    *ngIf="
+                      actorGroup.get('characterName')?.touched &&
+                      actorGroup.get('characterName')?.hasError('maxlength')
+                    "
+                  >
+                    Character name can be at most 150 characters.
+                  </mat-error>
+                </mat-form-field>
+
+                <button
+                  mat-icon-button
+                  color="warn"
+                  type="button"
+                  matTooltip="Remove actor"
+                  [disabled]="actorsArray.length === 1"
+                  (click)="removeActor(i)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+
+          @if (getActorsArrayError()) {
+            <div class="array-error">{{ getActorsArrayError() }}</div>
+          }
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Country Id</mat-label>
+          <input matInput type="number" min="1" formControlName="countryId" />
+          <mat-error *ngIf="hasError('countryId')">
+            {{ getErrorMessage('countryId') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Trailer Link</mat-label>
+          <input matInput formControlName="trailerLink" maxlength="500" />
+          <mat-error *ngIf="hasError('trailerLink')">
+            {{ getErrorMessage('trailerLink') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Story Line</mat-label>
+          <textarea matInput rows="5" maxlength="4000" formControlName="storyLine"></textarea>
+          <mat-error *ngIf="hasError('storyLine')">
+            {{ getErrorMessage('storyLine') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Price</mat-label>
+          <input matInput type="number" min="0.01" step="0.01" formControlName="price" />
+          <mat-error *ngIf="hasError('price')">
+            {{ getErrorMessage('price') }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Image Base64</mat-label>
+          <textarea matInput rows="6" formControlName="imageBase64"></textarea>
+          <mat-hint>Use raw base64 or data URI format.</mat-hint>
+          <mat-error *ngIf="hasError('imageBase64')">
+            {{ getErrorMessage('imageBase64') }}
+          </mat-error>
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error">{{ errorMessage }}</div>
+        }
+
+        <div class="actions">
+          <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || isLookupsLoading">
+            {{ isEditMode ? 'Save Changes' : 'Create Movie' }}
+          </button>
+        </div>
+      </form>
+  </div>
+</div>

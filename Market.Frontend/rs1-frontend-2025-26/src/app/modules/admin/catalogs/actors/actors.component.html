@@ -1,0 +1,58 @@
+<div class="actor-management">
+  <h2>Actor Management</h2>
+
+  <div class="form-container">
+    <h3>Manage Actors</h3>
+    <div class="management-tools">
+      <mat-form-field appearance="outline">
+        <mat-label>Actor Name</mat-label>
+        <input
+          matInput
+          #searchBox
+          [value]="request.name ?? ''"
+          (keyup.enter)="onSearch(searchBox.value)"
+          placeholder="Actor Name"
+        />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="onSearch(searchBox.value)">Search</button>
+      <button mat-raised-button color="primary" type="button" (click)="onCreate()">Add Actor</button>
+    </div>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state"><app-spinner></app-spinner></div>
+  } @else if (errorMessage) {
+    <div class="state error">{{ errorMessage }}</div>
+  } @else {
+    <div class="actor-list">
+      @for (actor of items; track actor.id) {
+        <div class="actor-card">
+          <div class="actor-image">
+            <img
+              [src]="getActorProfileImage(actor)"
+              alt="{{ actor.firstName }} {{ actor.lastName }}"
+              (error)="imageResolver.useActorFallback($event)"
+            />
+          </div>
+          <div class="actor-info">
+            <h4>{{ actor.firstName }} {{ actor.lastName }}</h4>
+            <p><strong>Birth Date:</strong> {{ actor.birthDate | date }}</p>
+            <p><strong>Actor ID:</strong> {{ actor.id }}</p>
+            <div class="actor-actions">
+              <button mat-stroked-button color="primary" type="button" (click)="onEdit(actor)">Edit</button>
+              <button mat-stroked-button color="warn" type="button" (click)="onDelete(actor)">Delete</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="state">No actors found.</div>
+      }
+    </div>
+
+    <div class="movie-paginator">
+      <button mat-stroked-button type="button" (click)="prevPage()" [disabled]="paging.page <= 1">Previous</button>
+      <span>Page {{ paging.page }} of {{ totalPages || 1 }}</span>
+      <button mat-stroked-button type="button" (click)="nextPage()" [disabled]="paging.page >= totalPages">Next</button>
+    </div>
+  }
+</div>

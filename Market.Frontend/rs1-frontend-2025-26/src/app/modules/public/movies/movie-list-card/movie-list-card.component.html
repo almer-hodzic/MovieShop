@@ -1,0 +1,34 @@
+<div class="movie_card" id="bright">
+  <div class="info_section">
+    <div class="movie_header">
+      <img
+        class="locandina"
+        [src]="getMovieImage()"
+        loading="lazy"
+        [alt]="movie.title"
+        (error)="imageResolver.useMovieFallback($event)"
+      />
+      <h1 [routerLink]="['/movies', movie.id]" class="title">{{ movie.title }}</h1>
+      <h4><span class="date">({{ movie.releaseDate | date: 'MMM dd, yyyy' }})</span> {{ movie.directorName }}</h4>
+      <span class="minutes">{{ formattedDuration }}</span>
+      <p class="mpaa">Price: €{{ movie.price | number: '1.2-2' }}</p>
+    </div>
+    <div class="movie_desc">
+      <p class="text">
+        {{ movie.storyLine | slice: 0 : 140 }}...
+        <app-star [rating]="(movie.averageScore ?? 0) / 2"></app-star>
+      </p>
+    </div>
+    <div class="movie_social">
+      <button mat-raised-button color="warn" style="margin: 2px" [routerLink]="['/movies', movie.id]">
+        <i class="fas fa-info-circle"></i>
+        Details
+      </button>
+      <button mat-raised-button color="accent" style="margin: 2px" [routerLink]="trailerId ? ['/play', trailerId] : null" [disabled]="!trailerId">
+        <i class="fas fa-play-circle fa-2x"></i>
+        <span style="font-size: large; margin-left: 10px">Trailer</span>
+      </button>
+    </div>
+  </div>
+  <div class="blur_back" [style.background-image]="'url(' + getMovieImage() + ')'" loading="lazy"></div>
+</div>

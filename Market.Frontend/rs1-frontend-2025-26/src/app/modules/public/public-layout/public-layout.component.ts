@@ -6,7 +6,4 @@ import { Component } from '@angular/core';
   templateUrl: './public-layout.component.html',
   styleUrl: './public-layout.component.scss',
 })
-export class PublicLayoutComponent {
-  currentYear: string = "2025";
-
-}
+export class PublicLayoutComponent {}

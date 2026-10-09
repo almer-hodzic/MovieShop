@@ -1,0 +1,16 @@
+<mat-card-content>
+    <div *ngIf="isLoading">
+      <app-spinner color="#5552ff" class="confirmation-spinner"></app-spinner>
+      <p>Confirming your email...</p>
+    </div>
+    <div *ngIf="!isLoading && isConfirmed">
+      <h3>Email Confirmation Successful</h3>
+      <p>Your email has been successfully confirmed.</p>
+      <a mat-raised-button color="warn" routerLink="/auth/login">Continue to Login</a>
+    </div>
+    <div *ngIf="!isLoading && !isConfirmed">
+      <h3>Email Confirmation Failed</h3>
+      <p>{{ errorMessage || 'There was an error confirming your email. Please try again.' }}</p>
+      <a routerLink="/auth/login">Back to Login</a>
+    </div>
+</mat-card-content>

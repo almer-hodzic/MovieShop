@@ -1,0 +1,30 @@
+sequenceDiagram
+    actor User
+    participant Angular
+    participant AuthController
+    participant Handler as Auth command handlers
+    participant Email as Email service
+    participant Db as MovieShopDb
+
+    User->>Angular: Register
+    Angular->>AuthController: POST /api/auth/register
+    AuthController->>Handler: RegisterCommand
+    Handler->>Db: Create user and confirmation token hash
+    Handler->>Email: Send confirmation link
+    User->>Angular: Confirm email
+    Angular->>AuthController: POST /api/auth/confirm-email
+    AuthController->>Handler: ConfirmEmailCommand
+    Handler->>Db: Mark email confirmed
+    User->>Angular: Login
+    Angular->>AuthController: POST /api/auth/login
+    AuthController->>Handler: LoginCommand
+    alt Two-factor enabled
+        Handler->>Db: Store two-factor code hash and expiry
+        Handler->>Email: Send code
+        Handler-->>Angular: Challenge required
+        User->>Angular: Enter code
+        Angular->>AuthController: POST /api/auth/verify-2fa
+        AuthController->>Handler: VerifyTwoFactorCommand
+    end
+    Handler->>Db: Store refresh token
+    Handler-->>Angular: JWT access token and refresh token

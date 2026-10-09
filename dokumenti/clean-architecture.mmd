@@ -1,0 +1,12 @@
+flowchart TD
+    UI[Angular non-standalone frontend] --> API[Market.API controllers]
+    API --> AUTH[JWT auth and AdminOnly policies]
+    API --> CQRS[Application commands and queries]
+    CQRS --> VALIDATION[FluentValidation behavior]
+    VALIDATION --> HANDLERS[Command/query handlers]
+    HANDLERS --> ABSTRACTIONS[Application abstractions]
+    ABSTRACTIONS --> INFRA[Market.Infrastructure services]
+    INFRA --> DB[(MovieShopDb SQL Server)]
+    INFRA --> PAYPAL[PayPal sandbox]
+    INFRA --> EMAIL[Email provider or development logs]
+    HANDLERS --> DOMAIN[Market.Domain entities]

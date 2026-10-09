@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Market.Application.Abstractions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Market.Infrastructure.Common;
 
@@ -13,12 +14,17 @@ public sealed class AppCurrentUser(IHttpContextAccessor httpContextAccessor)
     private readonly ClaimsPrincipal? _user = httpContextAccessor.HttpContext?.User;
 
     public int? UserId =>
-        int.TryParse(_user?.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
+        int.TryParse(FindFirstValue(
+            ClaimTypes.NameIdentifier,
+            JwtRegisteredClaimNames.Sub,
+            "sub",
+            "userId",
+            "nameid"), out var id)
             ? id
             : null;
 
     public string? Email =>
-        _user?.FindFirstValue(ClaimTypes.Email);
+        FindFirstValue(ClaimTypes.Email, JwtRegisteredClaimNames.Email, "email");
 
     public bool IsAuthenticated =>
         _user?.Identity?.IsAuthenticated ?? false;
@@ -31,4 +37,16 @@ public sealed class AppCurrentUser(IHttpContextAccessor httpContextAccessor)
 
     public bool IsEmployee =>
         _user?.FindFirstValue("is_employee")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+
+    private string? FindFirstValue(params string[] claimTypes)
+    {
+        foreach (var claimType in claimTypes)
+        {
+            var value = _user?.FindFirstValue(claimType);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
+    }
 }
