@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { BaseComponent } from '../../../core/components/base-classes/base-component';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 import { LoginCommand } from '../../../api-services/auth/auth-api.model';
@@ -24,7 +25,7 @@ export class LoginComponent extends BaseComponent {
   hidePassword = true;
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
 
@@ -63,11 +64,42 @@ export class LoginComponent extends BaseComponent {
         this.router.navigate([target]);
       },
       error: (err) => {
-        const message = 'Invalid credentials. Please try again.';
+        const message = getAuthError(err, 'Invalid credentials. Please try again.');
         this.stopLoading(message);
         this.toaster.error(message);
         console.error('Login error:', err);
       },
     });
   }
+}
+
+function getAuthError(error: unknown, fallback: string): string {
+  if (!(error instanceof HttpErrorResponse)) {
+    return fallback;
+  }
+
+  const payload = parseErrorPayload(error.error);
+  return payload?.message
+    ?? payload?.detail
+    ?? payload?.title
+    ?? fallback;
+}
+
+function parseErrorPayload(value: unknown): { message?: string; detail?: string; title?: string } | null {
+  if (value && typeof value === 'object') {
+    return value as { message?: string; detail?: string; title?: string };
+  }
+
+  if (typeof value === 'string') {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      return parsed && typeof parsed === 'object'
+        ? parsed as { message?: string; detail?: string; title?: string }
+        : null;
+    } catch {
+      return value.trim() ? { message: value } : null;
+    }
+  }
+
+  return null;
 }

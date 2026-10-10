@@ -48,8 +48,8 @@ export class MovieshopMenuComponent implements OnInit, OnDestroy {
     return this.currentUser.isAdmin();
   }
 
-  get userEmail(): string {
-    return this.currentUser.snapshot?.email ?? '';
+  get username(): string {
+    return this.currentUser.snapshot?.username ?? this.currentUser.snapshot?.email ?? '';
   }
 
   get unreadNotificationCount(): number {

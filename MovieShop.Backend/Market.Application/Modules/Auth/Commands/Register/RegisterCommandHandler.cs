@@ -12,6 +12,8 @@ public sealed class RegisterCommandHandler(
     public async Task<RegisterCommandDto> Handle(RegisterCommand request, CancellationToken ct)
     {
         var email = request.Email.Trim().ToLowerInvariant();
+        var username = request.Username.Trim();
+        var normalizedUsername = username.ToLowerInvariant();
         var firstname = request.Firstname.Trim();
         var lastname = request.Lastname.Trim();
 
@@ -21,12 +23,19 @@ public sealed class RegisterCommandHandler(
         if (emailExists)
             throw new MarketConflictException("Email already exists.");
 
+        var usernameExists = await ctx.Users
+            .AnyAsync(x => !x.IsDeleted && x.Username.ToLower() == normalizedUsername, ct);
+
+        if (usernameExists)
+            throw new MarketConflictException("Username already exists.");
+
         var confirmationToken = GenerateConfirmationToken();
 
         var user = new MarketUserEntity
         {
             Firstname = firstname,
             Lastname = lastname,
+            Username = username,
             Email = email,
             IsAdmin = false,
             IsManager = false,
@@ -54,6 +63,7 @@ public sealed class RegisterCommandHandler(
         return new RegisterCommandDto
         {
             Id = user.Id,
+            Username = user.Username,
             Email = user.Email,
             Firstname = user.Firstname,
             Lastname = user.Lastname,

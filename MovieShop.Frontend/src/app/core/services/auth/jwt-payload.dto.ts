@@ -6,6 +6,9 @@ export interface JwtPayloadDto {
   'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'?: string;
   email?: string;
   'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'?: string;
+  username?: string;
+  name?: string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'?: string;
   is_admin: string;
   is_manager: string;
   is_employee: string;

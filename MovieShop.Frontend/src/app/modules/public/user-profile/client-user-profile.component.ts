@@ -168,8 +168,7 @@ export class ClientUserProfileComponent implements OnInit {
   }
 
   private fillForm(profile: GetMyProfileQueryDto): void {
-    const displayName = `${profile.firstname} ${profile.lastname}`.trim() || profile.email;
-    this.passwordForm.patchValue({ username: displayName });
+    this.passwordForm.patchValue({ username: profile.username || profile.email });
     this.emailForm.patchValue({ email: profile.email });
     this.emailForm.markAsPristine();
   }

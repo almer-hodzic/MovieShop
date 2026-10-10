@@ -28,6 +28,7 @@ public static class DynamicDataSeeder
         {
             new MarketUserEntity
             {
+                Username = "admin",
                 Email = "admin@market.local",
                 PasswordHash = hasher.HashPassword(null!, "Admin123!"),
                 Firstname = "System",
@@ -40,6 +41,7 @@ public static class DynamicDataSeeder
             },
             new MarketUserEntity
             {
+                Username = "user",
                 Email = "user@market.local",
                 PasswordHash = hasher.HashPassword(null!, "User123!"),
                 Firstname = "Demo",
@@ -72,6 +74,7 @@ public static class DynamicDataSeeder
             existing.Lastname = string.IsNullOrWhiteSpace(existing.Lastname)
                 ? baselineUser.Lastname
                 : existing.Lastname;
+            existing.Username = baselineUser.Username;
             existing.IsEnabled = true;
             existing.IsEmailConfirmed = true;
             existing.IsTwoFactorEnabled = false;

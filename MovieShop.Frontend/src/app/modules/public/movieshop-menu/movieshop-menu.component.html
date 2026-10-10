@@ -48,7 +48,7 @@
     </span>
 
     <ng-container *ngIf="isAuthenticated(); else login">
-      <span class="welcome">Welcome <i class="username">{{ userEmail }}</i></span>
+      <span class="welcome">Welcome <i class="username">{{ username }}</i></span>
     </ng-container>
     <ng-template #login>
       <button mat-raised-button color="warn" routerLink="/auth/login">

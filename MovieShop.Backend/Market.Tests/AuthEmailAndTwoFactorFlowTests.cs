@@ -132,6 +132,7 @@ public sealed class AuthEmailAndTwoFactorFlowTests
         {
             firstname = "Auth",
             lastname = "Flow",
+            username = $"authflow{Guid.NewGuid():N}",
             email,
             password
         });
@@ -143,6 +144,7 @@ public sealed class AuthEmailAndTwoFactorFlowTests
             registerBody,
             new JsonSerializerOptions(JsonSerializerDefaults.Web));
         Assert.NotNull(registration);
+        Assert.False(string.IsNullOrWhiteSpace(registration.Username));
         Assert.False(registration.EmailDeliveryFallbackUsed);
         Assert.False(string.IsNullOrWhiteSpace(factory.EmailService.ConfirmationToken));
 
@@ -255,6 +257,81 @@ public sealed class AuthEmailAndTwoFactorFlowTests
             confirmPassword = "NewStrongPass123!"
         });
         resetResponse.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
+    public async Task Login_accepts_email_or_username_and_rejects_wrong_credentials()
+    {
+        await using var factory = new AuthFlowFactory();
+        using var client = factory.CreateClient();
+
+        var emailLogin = await client.PostAsJsonAsync("api/auth/login", new
+        {
+            email = "user@market.local",
+            password = "User123!",
+            fingerprint = "integration-test"
+        });
+        emailLogin.EnsureSuccessStatusCode();
+        var emailLoginBody = await emailLogin.Content.ReadFromJsonAsync<LoginCommandDto>();
+        Assert.NotNull(emailLoginBody);
+        Assert.False(emailLoginBody.RequiresTwoFactor);
+        Assert.False(string.IsNullOrWhiteSpace(emailLoginBody.AccessToken));
+
+        var usernameLogin = await client.PostAsJsonAsync("api/auth/login", new
+        {
+            email = "user",
+            password = "User123!",
+            fingerprint = "integration-test"
+        });
+        usernameLogin.EnsureSuccessStatusCode();
+        var usernameLoginBody = await usernameLogin.Content.ReadFromJsonAsync<LoginCommandDto>();
+        Assert.NotNull(usernameLoginBody);
+        Assert.False(usernameLoginBody.RequiresTwoFactor);
+        Assert.False(string.IsNullOrWhiteSpace(usernameLoginBody.AccessToken));
+
+        var wrongPassword = await client.PostAsJsonAsync("api/auth/login", new
+        {
+            email = "user",
+            password = "Wrong123!",
+            fingerprint = "integration-test"
+        });
+        Assert.Equal(HttpStatusCode.Conflict, wrongPassword.StatusCode);
+
+        var missingIdentifier = await client.PostAsJsonAsync("api/auth/login", new
+        {
+            email = "missing-user",
+            password = "User123!",
+            fingerprint = "integration-test"
+        });
+        Assert.Equal(HttpStatusCode.NotFound, missingIdentifier.StatusCode);
+    }
+
+    [Fact]
+    public async Task Registration_rejects_duplicate_username_case_insensitively()
+    {
+        await using var factory = new AuthFlowFactory();
+        using var client = factory.CreateClient();
+        var username = $"duplicate{Guid.NewGuid():N}";
+
+        var firstRegisterResponse = await client.PostAsJsonAsync("api/auth/register", new
+        {
+            firstname = "First",
+            lastname = "User",
+            username,
+            email = $"{username}@example.test",
+            password = "StrongPass123!"
+        });
+        Assert.Equal(HttpStatusCode.Created, firstRegisterResponse.StatusCode);
+
+        var duplicateRegisterResponse = await client.PostAsJsonAsync("api/auth/register", new
+        {
+            firstname = "Second",
+            lastname = "User",
+            username = username.ToUpperInvariant(),
+            email = $"{username}-second@example.test",
+            password = "StrongPass123!"
+        });
+        Assert.Equal(HttpStatusCode.Conflict, duplicateRegisterResponse.StatusCode);
     }
 
     private sealed class AuthFlowFactory : WebApplicationFactory<Program>

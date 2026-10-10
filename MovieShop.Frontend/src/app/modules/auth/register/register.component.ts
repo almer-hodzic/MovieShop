@@ -26,6 +26,7 @@ export class RegisterComponent {
     {
       firstname: ['', [Validators.required, Validators.maxLength(100)]],
       lastname: ['', [Validators.required, Validators.maxLength(100)]],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9._-]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(200)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
       confirmPassword: ['', Validators.required],
@@ -46,6 +47,7 @@ export class RegisterComponent {
     this.authApi.register({
       firstname: this.form.controls.firstname.value ?? '',
       lastname: this.form.controls.lastname.value ?? '',
+      username: this.form.controls.username.value ?? '',
       email: this.form.controls.email.value ?? '',
       password: this.form.controls.password.value ?? ''
     }).subscribe({

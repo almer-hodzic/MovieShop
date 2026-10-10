@@ -16,6 +16,7 @@ public sealed class GetReviewsByMovieIdQueryHandler(IAppDbContext ctx)
             q = q.Where(x => x.User != null &&
                 (
                     (x.User.Firstname + " " + x.User.Lastname).Contains(term) ||
+                    x.User.Username.Contains(term) ||
                     x.User.Email.Contains(term)
                 ));
         }
@@ -30,7 +31,7 @@ public sealed class GetReviewsByMovieIdQueryHandler(IAppDbContext ctx)
                 Comment = x.Comment,
                 UserId = x.UserId,
                 MovieId = x.MovieId,
-                UserName = x.User != null ? x.User.Email : string.Empty,
+                UserName = x.User != null ? x.User.Username : string.Empty,
             });
 
         return await PageResult<GetReviewsByMovieIdQueryDto>.FromQueryableAsync(projectedQuery, request.Paging, ct);

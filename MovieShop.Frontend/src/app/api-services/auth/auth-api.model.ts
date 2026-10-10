@@ -72,12 +72,14 @@ export interface LogoutCommand {
 export interface RegisterCommand {
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   password: string;
 }
 
 export interface RegisterCommandDto {
   id: number;
+  username: string;
   email: string;
   firstname: string;
   lastname: string;

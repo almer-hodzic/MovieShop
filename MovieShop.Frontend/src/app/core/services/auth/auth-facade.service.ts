@@ -164,6 +164,10 @@ export class AuthFacadeService {
       const email = payload.email ??
         payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] ??
         '';
+      const username = payload.username ??
+        payload.name ??
+        payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ??
+        email;
       const userId = payload.sub ??
         payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ??
         payload.nameid ??
@@ -175,6 +179,7 @@ export class AuthFacadeService {
 
       const user: CurrentUserDto = {
         userId: Number(userId),
+        username,
         email,
         isAdmin: payload.is_admin === 'true',
         isManager: payload.is_manager === 'true',

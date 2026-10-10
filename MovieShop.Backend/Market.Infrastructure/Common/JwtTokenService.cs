@@ -33,6 +33,8 @@ public sealed class JwtTokenService : IJwtTokenService
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(ClaimTypes.NameIdentifier,   user.Id.ToString()),
+            new(ClaimTypes.Name,             user.Username),
+            new("username",                  user.Username),
             new(ClaimTypes.Email,            user.Email),
             new("is_admin",    user.IsAdmin.ToString().ToLowerInvariant()),
             new("is_manager",  user.IsManager.ToString().ToLowerInvariant()),

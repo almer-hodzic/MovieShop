@@ -11,6 +11,13 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUse
         b.HasIndex(x => x.Email)
             .IsUnique();
 
+        b.HasIndex(x => x.Username)
+            .IsUnique();
+
+        b.Property(x => x.Username)
+            .IsRequired()
+            .HasMaxLength(100);
+
         b.Property(x => x.Email)
             .IsRequired()
             .HasMaxLength(200);

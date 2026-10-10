@@ -14,6 +14,7 @@ public sealed class GetMyProfileQueryHandler(IAppDbContext ctx, IAppCurrentUser 
             .Select(x => new GetMyProfileQueryDto
             {
                 Id = x.Id,
+                Username = x.Username,
                 Email = x.Email,
                 Firstname = x.Firstname,
                 Lastname = x.Lastname,

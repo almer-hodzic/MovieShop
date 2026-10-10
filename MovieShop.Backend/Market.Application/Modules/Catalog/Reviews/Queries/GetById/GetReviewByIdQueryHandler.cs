@@ -16,7 +16,7 @@ public sealed class GetReviewByIdQueryHandler(IAppDbContext ctx)
                 Comment = x.Comment,
                 UserId = x.UserId,
                 MovieId = x.MovieId,
-                UserName = x.User != null ? x.User.Email : string.Empty,
+                UserName = x.User != null ? x.User.Username : string.Empty,
             })
             .FirstOrDefaultAsync(ct);
 

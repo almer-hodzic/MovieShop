@@ -10,10 +10,14 @@ public sealed class LoginCommandHandler(
 {
     public async Task<LoginCommandDto> Handle(LoginCommand request, CancellationToken ct)
     {
-        var email = request.Email.Trim().ToLowerInvariant();
+        var identifier = request.Email.Trim().ToLowerInvariant();
 
         var user = await ctx.Users
-            .FirstOrDefaultAsync(x => x.Email.ToLower() == email && x.IsEnabled && !x.IsDeleted, ct)
+            .FirstOrDefaultAsync(x =>
+                (x.Email.ToLower() == identifier || x.Username.ToLower() == identifier) &&
+                x.IsEnabled &&
+                !x.IsDeleted,
+                ct)
             ?? throw new MarketNotFoundException("Korisnik nije pronađen ili je onemogućen.");
 
         var verify = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);

@@ -7,19 +7,16 @@
     <form novalidate [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
       <p>
         <mat-form-field appearance="outline" color="warn">
-          <mat-label class="label">Username</mat-label>
+          <mat-label class="label">Email or username</mat-label>
           <input
-            type="email"
+            type="text"
             matInput
-            placeholder="type your username"
+            placeholder="type your email or username"
             formControlName="email"
           />
           <mat-icon matSuffix>person</mat-icon>
           <mat-error class="error" *ngIf="form.controls.email.hasError('required')">
-            UserName is <strong>required.</strong>
-          </mat-error>
-          <mat-error class="error" *ngIf="form.controls.email.hasError('email')">
-            Please enter a valid email address.
+            Email or username is <strong>required.</strong>
           </mat-error>
         </mat-form-field>
       </p>
