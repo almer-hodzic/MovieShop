@@ -9,11 +9,21 @@ export interface GetMyShoppingCartItemDto {
   addedAt: string;
 }
 
+export interface GetMySavedForLaterItemDto {
+  itemId: number;
+  movieId: number;
+  movieTitle: string;
+  movieImage?: string | null;
+  unitPrice: number;
+  addedAt: string;
+}
+
 export interface GetMyShoppingCartQueryDto {
   cartId: number;
   userId: number;
   lastModifiedAt: string;
   items: GetMyShoppingCartItemDto[];
+  savedForLaterItems: GetMySavedForLaterItemDto[];
   totalQuantity: number;
   totalAmount: number;
 }

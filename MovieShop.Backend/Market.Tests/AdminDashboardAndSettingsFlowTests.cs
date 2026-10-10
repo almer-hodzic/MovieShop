@@ -126,7 +126,7 @@ public sealed class AdminDashboardAndSettingsFlowTests : IClassFixture<WebApplic
             ReviewsCount = await db.Reviews.AsNoTracking().CountAsync(x => !x.IsDeleted),
             UsersCount = await db.Users.AsNoTracking().CountAsync(x => !x.IsDeleted),
             FavouritesCount = await db.FavouriteMovies.AsNoTracking().CountAsync(x => !x.IsDeleted),
-            ActiveCartItemsCount = await db.CartItems.AsNoTracking().CountAsync(x => !x.IsDeleted),
+            ActiveCartItemsCount = await db.CartItems.AsNoTracking().CountAsync(x => !x.IsDeleted && !x.IsSavedForLater),
             NotificationsCount = await db.Notifications.AsNoTracking().CountAsync(x => !x.IsDeleted)
         };
     }

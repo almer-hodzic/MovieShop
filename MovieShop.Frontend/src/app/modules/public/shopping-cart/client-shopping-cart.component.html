@@ -38,9 +38,14 @@
           </button>
         </div>
       </div>
-      <button class="remove-button" [disabled]="isRemoving(item.itemId)" (click)="removeItem(item)">
-        {{ isRemoving(item.itemId) ? 'Removing...' : 'Remove' }}
-      </button>
+      <div class="item-actions">
+        <button class="save-button" [disabled]="isSaving(item.itemId) || isRemoving(item.itemId)" (click)="saveForLater(item)">
+          {{ isSaving(item.itemId) ? 'Saving...' : 'Save for later' }}
+        </button>
+        <button class="remove-button" [disabled]="isRemoving(item.itemId) || isSaving(item.itemId)" (click)="removeItem(item)">
+          {{ isRemoving(item.itemId) ? 'Removing...' : 'Remove' }}
+        </button>
+      </div>
     </div>
   </div>
 
@@ -53,5 +58,37 @@
     </button>
     <button class="checkout-button" [disabled]="cartItems.length === 0" (click)="navigateToCheckout()">Checkout</button>
   </div>
+
+  <section class="saved-section">
+    <h3>Saved for later</h3>
+    <div *ngIf="!isLoading && !errorMessage && savedItems.length === 0" class="empty-cart">
+      <p>No saved items yet.</p>
+    </div>
+
+    <div *ngIf="!isLoading && !errorMessage && savedItems.length > 0" class="cart-items saved-items">
+      <div *ngFor="let item of savedItems" class="cart-item saved-item">
+        <img
+          [src]="getSavedMovieImage(item)"
+          alt="Movie Image"
+          class="movie-image"
+          [routerLink]="['/movies', item.movieId]"
+          (error)="imageResolver.useMovieFallback($event)"
+        />
+        <div class="item-details">
+          <p><strong>{{ item.movieTitle }}</strong></p>
+          <p><strong>Price:</strong> ${{ item.unitPrice | number: '1.2-2' }}</p>
+          <p><strong>Saved At:</strong> {{ item.addedAt | date: 'short' }}</p>
+        </div>
+        <div class="item-actions">
+          <button class="move-button" [disabled]="isMovingSaved(item.itemId) || isRemovingSaved(item.itemId)" (click)="moveSavedToCart(item)">
+            {{ isMovingSaved(item.itemId) ? 'Moving...' : 'Move to cart' }}
+          </button>
+          <button class="remove-button" [disabled]="isRemovingSaved(item.itemId) || isMovingSaved(item.itemId)" (click)="removeSavedItem(item)">
+            {{ isRemovingSaved(item.itemId) ? 'Removing...' : 'Remove' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 <router-outlet name="modal"></router-outlet>

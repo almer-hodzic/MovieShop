@@ -37,7 +37,10 @@
           <mat-icon matSuffix>person</mat-icon>
           <mat-error class="error" *ngIf="form.controls.username.hasError('required')">Please provide a <strong>username.</strong></mat-error>
           <mat-error class="error" *ngIf="form.controls.username.hasError('minlength')">Username must be at least <strong>3 characters.</strong></mat-error>
+          <mat-error class="error" *ngIf="form.controls.username.hasError('maxlength')">Username can be at most <strong>100 characters.</strong></mat-error>
           <mat-error class="error" *ngIf="form.controls.username.hasError('pattern')">Use only letters, numbers, dots, underscores, or hyphens.</mat-error>
+          <mat-error class="error" *ngIf="form.controls.username.hasError('usernameTaken')">Username is already taken.</mat-error>
+          <mat-hint *ngIf="form.controls.username.pending">Checking username...</mat-hint>
         </mat-form-field>
       </p>
       <p>
@@ -63,7 +66,7 @@
         <mat-checkbox formControlName="acceptTerms"></mat-checkbox>
         I accept the <span class="policy">Terms of Service and Privacy Policy.</span>
       </div>
-      <button [disabled]="isLoading || form.invalid" mat-raised-button class="action-btn" type="submit" color="warn">
+      <button [disabled]="isLoading || form.invalid || form.pending" mat-raised-button class="action-btn" type="submit" color="warn">
         <i *ngIf="isLoading" class="fas fa-spinner fa-spin fa-1x fa-fw"></i>
         Sign Up
       </button>

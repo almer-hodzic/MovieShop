@@ -1,6 +1,9 @@
 using Market.Application.Modules.Sales.ShoppingCart.Commands.AddItem;
 using Market.Application.Modules.Sales.ShoppingCart.Commands.Clear;
+using Market.Application.Modules.Sales.ShoppingCart.Commands.MoveItemToSavedForLater;
+using Market.Application.Modules.Sales.ShoppingCart.Commands.MoveSavedItemToCart;
 using Market.Application.Modules.Sales.ShoppingCart.Commands.RemoveItem;
+using Market.Application.Modules.Sales.ShoppingCart.Commands.RemoveSavedItem;
 using Market.Application.Modules.Sales.ShoppingCart.Commands.UpdateQuantity;
 using Market.Application.Modules.Sales.ShoppingCart.Queries.GetMine;
 
@@ -35,6 +38,24 @@ public sealed class ShoppingCartController(ISender sender) : ControllerBase
     public async Task RemoveItem(int itemId, CancellationToken ct)
     {
         await sender.Send(new RemoveShoppingCartItemCommand { ItemId = itemId }, ct);
+    }
+
+    [HttpPost("items/{itemId:int}/save-for-later")]
+    public async Task MoveItemToSavedForLater(int itemId, CancellationToken ct)
+    {
+        await sender.Send(new MoveCartItemToSavedForLaterCommand { ItemId = itemId }, ct);
+    }
+
+    [HttpPost("saved-items/{itemId:int}/move-to-cart")]
+    public async Task MoveSavedItemToCart(int itemId, CancellationToken ct)
+    {
+        await sender.Send(new MoveSavedItemToCartCommand { ItemId = itemId }, ct);
+    }
+
+    [HttpDelete("saved-items/{itemId:int}")]
+    public async Task RemoveSavedItem(int itemId, CancellationToken ct)
+    {
+        await sender.Send(new RemoveSavedShoppingCartItemCommand { ItemId = itemId }, ct);
     }
 
     [HttpDelete("clear")]

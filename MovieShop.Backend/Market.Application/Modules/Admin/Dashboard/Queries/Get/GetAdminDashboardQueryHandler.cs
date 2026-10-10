@@ -14,7 +14,7 @@ public sealed class GetAdminDashboardQueryHandler(IAppDbContext ctx)
             ReviewsCount = await ctx.Reviews.AsNoTracking().CountAsync(x => !x.IsDeleted, ct),
             UsersCount = await ctx.Users.AsNoTracking().CountAsync(x => !x.IsDeleted, ct),
             FavouritesCount = await ctx.FavouriteMovies.AsNoTracking().CountAsync(x => !x.IsDeleted, ct),
-            ActiveCartItemsCount = await ctx.CartItems.AsNoTracking().CountAsync(x => !x.IsDeleted, ct),
+            ActiveCartItemsCount = await ctx.CartItems.AsNoTracking().CountAsync(x => !x.IsDeleted && !x.IsSavedForLater, ct),
             NotificationsCount = await ctx.Notifications.AsNoTracking().CountAsync(x => !x.IsDeleted, ct)
         };
     }

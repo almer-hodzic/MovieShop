@@ -1,6 +1,7 @@
 using Market.Application.Abstractions;
 using Market.Application.Modules.Auth.Commands.Login;
 using Market.Application.Modules.Auth.Commands.Register;
+using Market.Application.Modules.Auth.Queries.CheckUsernameAvailability;
 using Market.Infrastructure.Common;
 using Market.Shared.Options;
 using Microsoft.AspNetCore.Hosting;
@@ -332,6 +333,28 @@ public sealed class AuthEmailAndTwoFactorFlowTests
             password = "StrongPass123!"
         });
         Assert.Equal(HttpStatusCode.Conflict, duplicateRegisterResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Username_availability_reports_existing_names_case_insensitively()
+    {
+        await using var factory = new AuthFlowFactory();
+        using var client = factory.CreateClient();
+
+        var userAvailability = await client.GetFromJsonAsync<CheckUsernameAvailabilityQueryDto>(
+            "api/auth/username-available?username=user");
+        Assert.NotNull(userAvailability);
+        Assert.False(userAvailability.Available);
+
+        var adminAvailability = await client.GetFromJsonAsync<CheckUsernameAvailabilityQueryDto>(
+            "api/auth/username-available?username=ADMIN");
+        Assert.NotNull(adminAvailability);
+        Assert.False(adminAvailability.Available);
+
+        var uniqueAvailability = await client.GetFromJsonAsync<CheckUsernameAvailabilityQueryDto>(
+            $"api/auth/username-available?username=unique{Guid.NewGuid():N}");
+        Assert.NotNull(uniqueAvailability);
+        Assert.True(uniqueAvailability.Available);
     }
 
     private sealed class AuthFlowFactory : WebApplicationFactory<Program>

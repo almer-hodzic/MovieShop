@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthApiService } from '../../../api-services/auth/auth-api.service';
 import { ToasterService } from '../../../core/services/toaster.service';
+import { usernameAvailabilityValidator } from '../validators/username-availability.validator';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,11 @@ export class RegisterComponent {
     {
       firstname: ['', [Validators.required, Validators.maxLength(100)]],
       lastname: ['', [Validators.required, Validators.maxLength(100)]],
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9._-]+$/)]],
+      username: [
+        '',
+        [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9._-]+$/)],
+        [usernameAvailabilityValidator(this.authApi)]
+      ],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(200)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]],
       confirmPassword: ['', Validators.required],
@@ -36,7 +41,7 @@ export class RegisterComponent {
   );
 
   onSubmit(): void {
-    if (this.form.invalid || this.isLoading) {
+    if (this.form.invalid || this.form.pending || this.isLoading) {
       this.form.markAllAsTouched();
       return;
     }

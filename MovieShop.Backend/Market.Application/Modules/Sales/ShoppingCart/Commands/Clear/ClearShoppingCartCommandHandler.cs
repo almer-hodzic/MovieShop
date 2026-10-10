@@ -12,10 +12,10 @@ public sealed class ClearShoppingCartCommandHandler(IAppDbContext ctx, IAppCurre
             .Include(x => x.CartItems)
             .FirstOrDefaultAsync(x => x.UserId == userId, ct);
 
-        if (cart is null || !cart.CartItems.Any())
+        if (cart is null || !cart.CartItems.Any(x => !x.IsSavedForLater))
             return;
 
-        ctx.CartItems.RemoveRange(cart.CartItems);
+        ctx.CartItems.RemoveRange(cart.CartItems.Where(x => !x.IsSavedForLater));
         cart.LastModifiedAt = DateTime.UtcNow;
 
         await ctx.SaveChangesAsync(ct);

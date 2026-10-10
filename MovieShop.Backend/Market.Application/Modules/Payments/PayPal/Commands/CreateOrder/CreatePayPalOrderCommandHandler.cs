@@ -20,6 +20,7 @@ public sealed class CreatePayPalOrderCommandHandler(
             .AsNoTracking()
             .Where(x => x.UserId == userId)
             .SelectMany(x => x.CartItems)
+            .Where(x => !x.IsSavedForLater)
             .SumAsync(x => (decimal?)(x.Price * x.Quantity), ct)
             ?? 0m;
 

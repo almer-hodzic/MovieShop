@@ -12,6 +12,7 @@ public sealed class UpdateShoppingCartItemQuantityCommandHandler(IAppDbContext c
             .Include(x => x.ShoppingCart)
             .FirstOrDefaultAsync(
                 x => x.Id == request.ItemId &&
+                     !x.IsSavedForLater &&
                      x.ShoppingCart != null &&
                      x.ShoppingCart.UserId == userId,
                 ct)

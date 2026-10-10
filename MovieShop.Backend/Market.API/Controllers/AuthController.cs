@@ -6,6 +6,7 @@ using Market.Application.Modules.Auth.Commands.Refresh;
 using Market.Application.Modules.Auth.Commands.Register;
 using Market.Application.Modules.Auth.Commands.ResetPassword;
 using Market.Application.Modules.Auth.Commands.VerifyTwoFactor;
+using Market.Application.Modules.Auth.Queries.CheckUsernameAvailability;
 
 [ApiController]
 [Route("api/auth")]
@@ -24,6 +25,15 @@ public sealed class AuthController(IMediator mediator) : ControllerBase
     {
         var result = await mediator.Send(command, ct);
         return CreatedAtAction(nameof(Register), new { id = result.Id }, result);
+    }
+
+    [HttpGet("username-available")]
+    [AllowAnonymous]
+    public async Task<ActionResult<CheckUsernameAvailabilityQueryDto>> CheckUsernameAvailability(
+        [FromQuery] string username,
+        CancellationToken ct)
+    {
+        return Ok(await mediator.Send(new CheckUsernameAvailabilityQuery { Username = username }, ct));
     }
 
     [HttpPost("confirm-email")]

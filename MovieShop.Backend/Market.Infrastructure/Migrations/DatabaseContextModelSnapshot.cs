@@ -618,6 +618,11 @@ namespace Market.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsSavedForLater")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime?>("ModifiedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -640,7 +645,7 @@ namespace Market.Infrastructure.Migrations
 
                     b.HasIndex("ShoppingCartId");
 
-                    b.HasIndex("ShoppingCartId", "MovieId");
+                    b.HasIndex("ShoppingCartId", "MovieId", "IsSavedForLater");
 
                     b.ToTable("CartItems", (string)null);
                 });

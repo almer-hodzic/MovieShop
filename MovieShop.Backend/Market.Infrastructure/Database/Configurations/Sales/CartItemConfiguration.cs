@@ -23,6 +23,10 @@ public sealed class CartItemConfiguration : IEntityTypeConfiguration<CartItemEnt
         b.Property(x => x.AddedAt)
             .IsRequired();
 
+        b.Property(x => x.IsSavedForLater)
+            .IsRequired()
+            .HasDefaultValue(false);
+
         b.HasOne(x => x.ShoppingCart)
             .WithMany(x => x.CartItems)
             .HasForeignKey(x => x.ShoppingCartId)
@@ -35,6 +39,6 @@ public sealed class CartItemConfiguration : IEntityTypeConfiguration<CartItemEnt
 
         b.HasIndex(x => x.ShoppingCartId);
         b.HasIndex(x => x.MovieId);
-        b.HasIndex(x => new { x.ShoppingCartId, x.MovieId });
+        b.HasIndex(x => new { x.ShoppingCartId, x.MovieId, x.IsSavedForLater });
     }
 }

@@ -90,6 +90,10 @@ export interface RegisterCommandDto {
   emailDeliveryMessage?: string | null;
 }
 
+export interface UsernameAvailabilityDto {
+  available: boolean;
+}
+
 export interface ForgotPasswordCommand {
   email: string;
 }

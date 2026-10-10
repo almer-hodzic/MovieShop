@@ -16,7 +16,8 @@ import {
   ResetPasswordCommandDto,
   ConfirmEmailCommand,
   ConfirmEmailCommandDto,
-  VerifyTwoFactorCommand
+  VerifyTwoFactorCommand,
+  UsernameAvailabilityDto
 } from './auth-api.model';
 
 @Injectable({
@@ -52,6 +53,12 @@ export class AuthApiService {
 
   register(payload: RegisterCommand): Observable<RegisterCommandDto> {
     return this.http.post<RegisterCommandDto>(`${this.baseUrl}/register`, payload);
+  }
+
+  checkUsernameAvailability(username: string): Observable<UsernameAvailabilityDto> {
+    return this.http.get<UsernameAvailabilityDto>(`${this.baseUrl}/username-available`, {
+      params: { username },
+    });
   }
 
   forgotPassword(payload: ForgotPasswordCommand): Observable<ForgotPasswordCommandDto> {

@@ -31,6 +31,18 @@ export class ShoppingCartApiService {
     return this.http.delete<void>(`${this.baseUrl}/items/${itemId}`);
   }
 
+  moveItemToSavedForLater(itemId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/items/${itemId}/save-for-later`, {});
+  }
+
+  moveSavedItemToCart(itemId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/saved-items/${itemId}/move-to-cart`, {});
+  }
+
+  removeSavedItem(itemId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/saved-items/${itemId}`);
+  }
+
   clear(): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/clear`);
   }

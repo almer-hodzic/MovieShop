@@ -2,6 +2,7 @@ using Market.Application.Abstractions;
 using Market.Application.Modules.Auth.Commands.Login;
 using Market.Application.Modules.Payments.PayPal.Commands.CaptureOrder;
 using Market.Application.Modules.Payments.PayPal.Commands.CreateOrder;
+using Market.Application.Modules.Sales.ShoppingCart.Queries.GetMine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net;
@@ -31,10 +32,25 @@ public sealed class PayPalFlowTests
         emptyResponse = await userClient.PostAsync("PayPal/CreateOrder", null);
         Assert.Equal(HttpStatusCode.BadRequest, emptyResponse.StatusCode);
 
-        var movie = await GetMovieAsync(factory);
+        var movies = await GetMoviesAsync(factory);
+        var savedMovie = movies[0];
+        var activeMovie = movies[1];
         var addResponse = await userClient.PostAsJsonAsync("ShoppingCart/items", new
         {
-            movieId = movie.Id,
+            movieId = savedMovie.Id,
+            quantity = 1
+        });
+        addResponse.EnsureSuccessStatusCode();
+
+        var cart = await userClient.GetFromJsonAsync<GetMyShoppingCartQueryDto>("ShoppingCart/my");
+        Assert.NotNull(cart);
+        var itemToSave = Assert.Single(cart.Items, x => x.MovieId == savedMovie.Id);
+        var saveResponse = await userClient.PostAsync($"ShoppingCart/items/{itemToSave.ItemId}/save-for-later", null);
+        saveResponse.EnsureSuccessStatusCode();
+
+        addResponse = await userClient.PostAsJsonAsync("ShoppingCart/items", new
+        {
+            movieId = activeMovie.Id,
             quantity = 2
         });
         addResponse.EnsureSuccessStatusCode();
@@ -50,7 +66,7 @@ public sealed class PayPalFlowTests
         Assert.NotNull(createOrder);
         Assert.False(string.IsNullOrWhiteSpace(createOrder.OrderId));
         Assert.Equal("USD", createOrder.CurrencyCode);
-        Assert.Equal(movie.Price * 2, createOrder.Amount);
+        Assert.Equal(activeMovie.Price * 2, createOrder.Amount);
 
         var wrongUserCapture = await adminClient.PostAsJsonAsync("PayPal/CaptureOrder", new
         {
@@ -95,17 +111,19 @@ public sealed class PayPalFlowTests
         return client;
     }
 
-    private static async Task<(int Id, decimal Price)> GetMovieAsync(WebApplicationFactory<Program> factory)
+    private static async Task<List<(int Id, decimal Price)>> GetMoviesAsync(WebApplicationFactory<Program> factory)
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        var movie = await db.Movies
+        var movies = await db.Movies
             .OrderBy(x => x.Id)
             .Select(x => new { x.Id, x.Price })
-            .FirstAsync();
+            .Take(2)
+            .ToListAsync();
 
-        return (movie.Id, movie.Price);
+        Assert.True(movies.Count >= 2);
+        return movies.Select(x => (x.Id, x.Price)).ToList();
     }
 
     private sealed class PayPalFactory : WebApplicationFactory<Program>

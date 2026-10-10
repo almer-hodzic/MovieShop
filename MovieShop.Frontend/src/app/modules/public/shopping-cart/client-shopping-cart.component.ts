@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  GetMySavedForLaterItemDto,
   GetMyShoppingCartItemDto,
   GetMyShoppingCartQueryDto,
 } from '../../../api-services/shopping-cart/shopping-cart-api.model';
@@ -28,6 +29,9 @@ export class ClientShoppingCartComponent implements OnInit {
   quantityDraftByItemId: Record<number, number> = {};
   updatingItemIds = new Set<number>();
   removingItemIds = new Set<number>();
+  savingItemIds = new Set<number>();
+  movingSavedItemIds = new Set<number>();
+  removingSavedItemIds = new Set<number>();
   isClearing = false;
 
   ngOnInit(): void {
@@ -119,6 +123,78 @@ export class ClientShoppingCartComponent implements OnInit {
     });
   }
 
+  saveForLater(item: GetMyShoppingCartItemDto): void {
+    if (this.savingItemIds.has(item.itemId)) {
+      return;
+    }
+
+    this.savingItemIds.add(item.itemId);
+
+    this.shoppingCartApi.moveItemToSavedForLater(item.itemId).subscribe({
+      next: () => {
+        this.savingItemIds.delete(item.itemId);
+        this.toaster.success('Item saved for later.');
+        this.loadCartItems();
+      },
+      error: (err) => {
+        console.error('Error saving item for later', err);
+        this.savingItemIds.delete(item.itemId);
+        this.toaster.error('Error saving item for later.');
+      },
+    });
+  }
+
+  moveSavedToCart(item: GetMySavedForLaterItemDto): void {
+    if (this.movingSavedItemIds.has(item.itemId)) {
+      return;
+    }
+
+    this.movingSavedItemIds.add(item.itemId);
+
+    this.shoppingCartApi.moveSavedItemToCart(item.itemId).subscribe({
+      next: () => {
+        this.movingSavedItemIds.delete(item.itemId);
+        this.toaster.success('Item moved to cart.');
+        this.loadCartItems();
+      },
+      error: (err) => {
+        console.error('Error moving saved item to cart', err);
+        this.movingSavedItemIds.delete(item.itemId);
+        this.toaster.error('Error moving saved item to cart.');
+      },
+    });
+  }
+
+  removeSavedItem(item: GetMySavedForLaterItemDto): void {
+    if (this.removingSavedItemIds.has(item.itemId)) {
+      return;
+    }
+
+    this.confirm.confirm({
+      title: 'Remove Saved Item',
+      message: `Remove "${item.movieTitle}" from saved items?`,
+      confirmText: 'Remove',
+      tone: 'danger',
+    }).subscribe((confirmed) => {
+      if (!confirmed) return;
+
+      this.removingSavedItemIds.add(item.itemId);
+
+      this.shoppingCartApi.removeSavedItem(item.itemId).subscribe({
+        next: () => {
+          this.removingSavedItemIds.delete(item.itemId);
+          this.toaster.success('Saved item removed.');
+          this.loadCartItems();
+        },
+        error: (err) => {
+          console.error('Error removing saved item', err);
+          this.removingSavedItemIds.delete(item.itemId);
+          this.toaster.error('Error removing saved item.');
+        }
+      });
+    });
+  }
+
   clearCart(): void {
     if (!this.cart?.items.length || this.isClearing) {
       return;
@@ -157,8 +233,24 @@ export class ClientShoppingCartComponent implements OnInit {
     return this.removingItemIds.has(itemId);
   }
 
+  isSaving(itemId: number): boolean {
+    return this.savingItemIds.has(itemId);
+  }
+
+  isMovingSaved(itemId: number): boolean {
+    return this.movingSavedItemIds.has(itemId);
+  }
+
+  isRemovingSaved(itemId: number): boolean {
+    return this.removingSavedItemIds.has(itemId);
+  }
+
   get cartItems(): GetMyShoppingCartItemDto[] {
     return this.cart?.items ?? [];
+  }
+
+  get savedItems(): GetMySavedForLaterItemDto[] {
+    return this.cart?.savedForLaterItems ?? [];
   }
 
   getTotal(): number {
@@ -166,6 +258,10 @@ export class ClientShoppingCartComponent implements OnInit {
   }
 
   getMovieImage(item: GetMyShoppingCartItemDto): string {
+    return this.imageResolver.resolveMovieImage(item);
+  }
+
+  getSavedMovieImage(item: GetMySavedForLaterItemDto): string {
     return this.imageResolver.resolveMovieImage(item);
   }
 
