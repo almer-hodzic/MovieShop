@@ -52,7 +52,7 @@ public sealed class PayPalService(
         var body = await response.Content.ReadAsStringAsync(ct);
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogError("PayPal create order failed. Status: {StatusCode}, Body: {Body}", response.StatusCode, body);
+            logger.LogError("PayPal create order failed. Status: {StatusCode}", response.StatusCode);
             throw new MarketConflictException("Error creating PayPal order.");
         }
 
@@ -81,7 +81,7 @@ public sealed class PayPalService(
 
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogError("PayPal capture order failed. Status: {StatusCode}, Body: {Body}", response.StatusCode, body);
+            logger.LogError("PayPal capture order failed. Status: {StatusCode}", response.StatusCode);
 
             return new PayPalCaptureOrderResult
             {
@@ -122,7 +122,7 @@ public sealed class PayPalService(
 
         if (!response.IsSuccessStatusCode)
         {
-            logger.LogError("PayPal order status failed. Status: {StatusCode}, Body: {Body}", response.StatusCode, body);
+            logger.LogError("PayPal order status failed. Status: {StatusCode}", response.StatusCode);
             throw new MarketConflictException("Error retrieving PayPal order status.");
         }
 
@@ -158,7 +158,7 @@ public sealed class PayPalService(
 
             if (!response.IsSuccessStatusCode)
             {
-                logger.LogError("PayPal token request failed. Status: {StatusCode}, Body: {Body}", response.StatusCode, body);
+                logger.LogError("PayPal token request failed. Status: {StatusCode}", response.StatusCode);
                 throw new MarketConflictException("Error requesting PayPal access token.");
             }
 

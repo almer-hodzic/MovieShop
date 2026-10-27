@@ -1,9 +1,13 @@
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Market.Infrastructure.Database;
 
 #nullable disable
 
 namespace Market.Infrastructure.Migrations
 {
+    [DbContext(typeof(DatabaseContext))]
+    [Migration("20261010010000_AddSaveForLaterToCartItems")]
     public partial class AddSaveForLaterToCartItems : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

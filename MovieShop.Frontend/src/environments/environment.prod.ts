@@ -1,5 +1,3 @@
-export const environment = {
-  production: true,
-  apiUrl: 'https://api.myapp.com', // stvarna produkcijska ruta
-  payPalClientId: ''
-};
+import { productionConfig } from './environment.production.generated';
+
+export const environment = { production: true, ...productionConfig };

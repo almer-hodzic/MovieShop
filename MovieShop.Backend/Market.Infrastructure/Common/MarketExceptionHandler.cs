@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Market.Application.Common.Exceptions;
 using Market.Shared.Dtos;
 using Microsoft.AspNetCore.Diagnostics;
@@ -29,13 +29,10 @@ public sealed class MarketExceptionHandler(
 
         var traceId = Activity.Current?.Id ?? ctx.TraceIdentifier;
 
-        logger.LogError(ex,
-            "Unhandled exception. Path: {Path}, Method: {Method}, TraceId: {TraceId}, User: {User}",
-            ctx.Request.Path,
-            ctx.Request.Method,
-            traceId,
-            ctx.User.Identity?.Name ?? "anonymous");
-
+        if (env.IsDevelopment())
+            logger.LogError(ex, "Request failed. TraceId: {TraceId}", traceId);
+        else
+            logger.LogWarning("Request failed ({ExceptionType}). TraceId: {TraceId}", ex.GetType().Name, traceId);
 
         ctx.Response.ContentType = "application/json";
         ctx.Response.StatusCode = ex switch

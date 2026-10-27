@@ -130,9 +130,8 @@ public sealed class SendGridAuthEmailService(
 
         var responseBody = await response.Content.ReadAsStringAsync(ct);
         logger.LogError(
-            "SendGrid email delivery failed. Status: {StatusCode}, Body: {Body}",
-            response.StatusCode,
-            responseBody);
+            "SendGrid email delivery failed. Status: {StatusCode}",
+            response.StatusCode);
         var quotaExceeded = responseBody.Contains(
             "Maximum credits exceeded",
             StringComparison.OrdinalIgnoreCase);

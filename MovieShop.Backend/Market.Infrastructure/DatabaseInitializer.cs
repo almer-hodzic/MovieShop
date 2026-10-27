@@ -1,4 +1,4 @@
-﻿using Market.Infrastructure.Database;
+using Market.Infrastructure.Database;
 using Market.Infrastructure.Database.Seeders;
 using Market.Shared.Constants;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +33,7 @@ public static class DatabaseInitializer
 
         var applyMigrationsOnStartup = configuration
             .GetValue<bool?>("DatabaseStartup:ApplyMigrationsOnStartup")
-            ?? !env.IsDevelopment();
+            ?? false;
 
         var seedOnStartup = configuration
             .GetValue<bool?>("DatabaseStartup:SeedOnStartup")
@@ -47,6 +47,11 @@ public static class DatabaseInitializer
         else
         {
             logger.LogInformation("Skipping database migrations on startup.");
+        }
+
+        if (configuration.GetValue<bool>("PublicDemo:Seed"))
+        {
+            await PublicDemoSeeder.SeedAsync(ctx, configuration);
         }
 
         if (env.IsDevelopment() && seedOnStartup)

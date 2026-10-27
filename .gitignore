@@ -557,3 +557,9 @@ http-client.private.env.json
 # Apifox Helper cache
 .idea/.cache/.Apifox_Helper
 .idea/ApifoxUploaderProjectSetting.xml
+
+# MovieShop deployment credentials and generated public build config
+.vercel/
+verification/
+.env*
+MovieShop.Frontend/src/environments/environment.production.generated.ts

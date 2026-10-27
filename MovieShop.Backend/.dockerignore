@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/Logs
+**/logs
+**/*.user
+**/*.pfx
+**/*.env
+**/.env*
+Market.Tests
+.vercel
+verification

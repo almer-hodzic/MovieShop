@@ -12,6 +12,12 @@ public static class DynamicDataSeeder
         await context.Database.EnsureCreatedAsync();
 
         await SeedUsersAsync(context);
+        await SeedCatalogAsync(context);
+    }
+
+    // Catalog-only entry point: never creates development users or changes roles.
+    public static async Task SeedCatalogAsync(DatabaseContext context)
+    {
         var categories = await SeedCategoriesAsync(context);
         var directors = await SeedDirectorsAsync(context);
         var actors = await SeedActorsAsync(context);

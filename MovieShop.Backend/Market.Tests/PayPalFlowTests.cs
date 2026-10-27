@@ -68,6 +68,11 @@ public sealed class PayPalFlowTests
         Assert.Equal("USD", createOrder.CurrencyCode);
         Assert.Equal(activeMovie.Price * 2, createOrder.Amount);
 
+        var wrongUserStatus = await adminClient.GetAsync($"PayPal/OrderStatus/{createOrder.OrderId}");
+        Assert.Equal(HttpStatusCode.Forbidden, wrongUserStatus.StatusCode);
+        var ownerStatus = await userClient.GetAsync($"PayPal/OrderStatus/{createOrder.OrderId}");
+        ownerStatus.EnsureSuccessStatusCode();
+
         var wrongUserCapture = await adminClient.PostAsJsonAsync("PayPal/CaptureOrder", new
         {
             orderId = createOrder.OrderId

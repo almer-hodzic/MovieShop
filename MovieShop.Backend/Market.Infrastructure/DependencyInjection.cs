@@ -1,4 +1,4 @@
-﻿using Market.Application.Abstractions;
+using Market.Application.Abstractions;
 using Market.Infrastructure.Common;
 using Market.Infrastructure.Database;
 using Market.Shared.Constants;
@@ -26,6 +26,9 @@ public static class DependencyInjection
 
         services.AddOptions<PayPalOptions>()
             .Bind(configuration.GetSection(PayPalOptions.SectionName))
+            .Validate(o => o.Mode.Equals("sandbox", StringComparison.OrdinalIgnoreCase) &&
+                o.BaseUrl.TrimEnd('/').Equals("https://api-m.sandbox.paypal.com", StringComparison.OrdinalIgnoreCase),
+                "Only the PayPal Sandbox endpoint and mode are supported.")
             .ValidateDataAnnotations()
             .ValidateOnStart();
 

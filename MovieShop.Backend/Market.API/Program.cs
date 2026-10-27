@@ -1,4 +1,5 @@
-﻿using Market.API;
+using Microsoft.EntityFrameworkCore;
+using Market.API;
 using Market.API.Middleware;
 using Market.Application;
 using Market.Infrastructure;
@@ -25,13 +26,24 @@ public partial class Program
             // 1) Standard builder (includes appsettings.json, appsettings.{ENV}.json,
             //    environment variables, user-secrets (Dev), and command-line args)
             //
-            var builder = WebApplication.CreateBuilder(args);
+            var initializeDatabase = args.Contains("--initialize-database");
+            var builder = WebApplication.CreateBuilder(args.Where(arg => arg != "--initialize-database").ToArray());
+            if (initializeDatabase)
+                builder.Configuration["DatabaseStartup:ApplyMigrationsOnStartup"] = "true";
 
             // 2) Promote Serilog to full configuration from builder.Configuration
             //    (reads "Serilog" section from appsettings + ENV overrides)
             //
             builder.Host.UseSerilog((ctx, services, cfg) =>
             {
+                if (ctx.HostingEnvironment.IsProduction())
+                {
+                    cfg.MinimumLevel.Information()
+                       .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                       .Enrich.FromLogContext()
+                       .WriteTo.Console();
+                    return;
+                }
                 cfg.ReadFrom.Configuration(ctx.Configuration)   // Serilog section in appsettings
                    .ReadFrom.Services(services)                 // DI enrichers if any
                    .Enrich.FromLogContext()
@@ -51,19 +63,10 @@ public partial class Program
                 .AddInfrastructure(builder.Configuration, builder.Environment)
                 .AddApplication();
 
-            // CORS policy to allow Angular dev server access
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularDev",
-                    policy =>
-                    {
-                        policy
-                            .WithOrigins("http://localhost:4200")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();
-                    });
-            });
+            builder.Services.AddDeploymentProtection(builder.Configuration, builder.Environment);
+            var port = Environment.GetEnvironmentVariable("PORT");
+            if (!string.IsNullOrWhiteSpace(port))
+                builder.WebHost.UseUrls($"http://0.0.0.0:{int.Parse(port)}");
 
             var app = builder.Build();
 
@@ -99,19 +102,55 @@ public partial class Program
 
             // Global exception handler (IExceptionHandler)
             app.UseExceptionHandler();
-            app.UseMiddleware<RequestResponseLoggingMiddleware>();
+            if (app.Environment.IsDevelopment())
+                app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
-            app.UseHttpsRedirection();
+            // TLS terminates at the deployment proxy; the container listens on HTTP.
+            if (app.Environment.IsDevelopment())
+                app.UseHttpsRedirection();
             // UseCors must run before authentication and authorization.
-            app.UseCors("AllowAngularDev");
+            app.UseCors("Frontend");
 
             app.UseAuthentication();
             app.UseAuthorization();
+            if (app.Environment.IsProduction())
+                app.UseRateLimiter();
 
             app.MapControllers();
+            app.MapGet("/health", async (Market.Infrastructure.Database.DatabaseContext db, CancellationToken ct) =>
+            {
+                using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                timeout.CancelAfter(TimeSpan.FromSeconds(5));
+                try
+                {
+                    // SQL connect retries can outlast cancellation alone. Keep readiness independent
+                    // from the application pool and bound the provider's own connection timeout.
+                    var connectionString = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(
+                        db.Database.GetConnectionString())
+                    {
+                        ConnectTimeout = 3,
+                        ConnectRetryCount = 0,
+                        Pooling = false
+                    };
+                    await using var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString.ConnectionString);
+                    await connection.OpenAsync(timeout.Token);
+                    await using var command = connection.CreateCommand();
+                    command.CommandText = "SELECT 1";
+                    command.CommandTimeout = 3;
+                    await command.ExecuteScalarAsync(timeout.Token);
+                    return Results.Ok(new { status = "healthy" });
+                }
+                catch
+                {
+                    return Results.StatusCode(503);
+                }
+            }).AllowAnonymous();
 
             // Database migrations + seeding
             await app.Services.InitializeDatabaseAsync(app.Environment, app.Configuration);
+
+            if (initializeDatabase)
+                return;
 
             Log.Information("Market API started successfully.");
             app.Run();
@@ -125,7 +164,9 @@ public partial class Program
         catch (Exception ex)
         {
             // Any startup failure will be logged here
-            Log.Fatal(ex, "Market API terminated unexpectedly.");
+            // Exception messages can contain provider configuration or personal data.
+            Log.Fatal("Market API terminated unexpectedly ({ExceptionType}).", ex.GetType().Name);
+            Environment.ExitCode = 1;
         }
         finally
         {
