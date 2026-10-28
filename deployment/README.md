@@ -2,13 +2,17 @@
 
 Current topology: Angular on Vercel; ASP.NET Core 10 container on Vercel; PostgreSQL on Neon Free through the Vercel Marketplace. Work stays on `deployment/vercel-demo`; main retains SQL Server. Portfolio and HoopsLab are unchanged.
 
-## Current release gate: Neon Marketplace terms
+## Neon provisioned and verified
 
-The authenticated CLI advertised `free_v3` as **Free (Free)**. Provisioning was attempted with Frankfurt (`fra1`), `auth=false`, `realtime=false`, `--no-connect`, and `--no-env-pull`. It returned `action_required` / `integration_terms_acceptance_required` before creating a database.
+The owner completed Marketplace terms/account setup without a paid plan or card. The existing authenticated Vercel CLI then provisioned exactly one `movieshop-demo` resource on **Free (`free_v3`)**, Frankfurt (`fra1`), with Neon Auth/realtime disabled. No paid plan was enabled.
 
-Owner action: open https://vercel.com/almer-hodzics-projects/~/integrations/accept-terms/neon?source=cli and review/accept the Marketplace addendum, Neon privacy policy and platform terms. The CLI did not open a browser or request a card; the browser's billing screen has not been inspected. Stop if a paid plan, card or billing authorization is requested. Do not paste credentials into chat.
+A MovieShop-only `movieshop-api` Vercel project was prepared on Hobby with container framework and `MovieShop.Backend` root. The database is connected only to its Production environment. Marketplace database credentials are encrypted; `ConnectionStrings__Main` is configured as an encrypted pooled Npgsql connection. Git is not linked and no public deployment was created by this setup.
 
-After owner acceptance, retry the same explicit Free provisioning request. Keep Neon Auth disabled: MovieShop retains its existing JWT authentication. Do not enable paid resources. Do not publish a Portfolio demo link until hosted verification passes.
+The tested baseline and safe non-staff demo seed were applied over the **direct** Neon connection. Repeating initialization was idempotent. Hosted PostgreSQL 18 verification confirmed one baseline/no pending migrations, three movies, one confirmed non-staff demo identity, zero admin users, and captured checkout state across independent contexts. The temporary verification session was removed. All 21 HTTP checks passed through a local Production API backed by Neon; that temporary API was stopped afterward.
+
+Both direct and pooled connections were established using certificate/hostname-validated SSL (`VerifyFull`). `GSS Encryption Mode=Disable` avoids optional Kerberos probing in the Linux container; TLS verification remains required. Real credentials are never recorded here or in Git. Local initialization/probe files and CLI-generated skill artifacts remain under ignored verification storage.
+
+The copied custom `ConnectionStrings__Main` must be refreshed if Marketplace database credentials are rotated; do not assume the custom key rotates with managed variables. No schema or application source changed during provisioning. Existing JWT/SendGrid/PayPal configuration is not yet populated for a public release. No fake initialization-only auth/email values were uploaded to Vercel. Final frontend origin/CORS, real Sandbox checkout, email delivery and hosted application verification remain release steps.
 
 ## Provider and compatibility
 
@@ -78,3 +82,5 @@ Sources:
 - https://www.npgsql.org/efcore/release-notes/10.0.html
 - https://www.npgsql.org/doc/types/datetime.html
 - https://vercel.com/marketplace/neon/neon
+
+Provisioning security reference: https://www.npgsql.org/doc/security.html
