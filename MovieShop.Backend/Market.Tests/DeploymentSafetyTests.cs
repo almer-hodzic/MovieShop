@@ -109,6 +109,20 @@ public sealed class DeploymentSafetyTests
         Assert.Throws<OptionsValidationException>(() => provider.GetRequiredService<IOptions<PayPalOptions>>().Value);
     }
 
+    [Fact]
+    public void Marketplace_database_URL_preserves_escaped_credentials_and_validates_Neon_certificates()
+    {
+        var password = Guid.NewGuid().ToString("N") + "@:/;";
+        var url = "postgresql://fixture:" + Uri.EscapeDataString(password) +
+            "@example.neon.tech/app?sslmode=require";
+        var connection = new Npgsql.NpgsqlConnectionStringBuilder(PostgresConnection.Normalize(url));
+        Assert.Equal(password, connection.Password);
+        Assert.Equal(Npgsql.SslMode.VerifyFull, connection.SslMode);
+        Assert.Equal(5432, connection.Port);
+        Assert.Equal(10, connection.MaxPoolSize);
+        Assert.Equal(0, connection.MinPoolSize);
+    }
+
     private sealed class ProductionEnvironment : IHostEnvironment
     {
         public string EnvironmentName { get; set; } = Environments.Production;

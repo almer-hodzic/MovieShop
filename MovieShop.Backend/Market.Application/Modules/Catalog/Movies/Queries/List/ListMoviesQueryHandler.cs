@@ -1,4 +1,4 @@
-﻿namespace Market.Application.Modules.Catalog.Movies.Queries.List;
+namespace Market.Application.Modules.Catalog.Movies.Queries.List;
 
 public sealed class ListMoviesQueryHandler(IAppDbContext ctx)
     : IRequestHandler<ListMoviesQuery, PageResult<ListMoviesQueryDto>>
@@ -9,8 +9,8 @@ public sealed class ListMoviesQueryHandler(IAppDbContext ctx)
 
         if (!string.IsNullOrWhiteSpace(request.Title))
         {
-            var term = request.Title.Trim();
-            q = q.Where(x => x.Title.Contains(term));
+            var term = request.Title.Trim().ToLower();
+            q = q.Where(x => x.Title.ToLower().Contains(term));
         }
 
         if (request.CategoryId is not null)

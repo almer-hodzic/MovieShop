@@ -45,13 +45,21 @@ public static class DependencyInjection
         {
             if (env.IsTest())
             {
-                options.UseInMemoryDatabase("IntegrationTestsDb");
-
+                var postgresTest = Environment.GetEnvironmentVariable("MOVIESHOP_TEST_POSTGRES_API");
+                if (string.IsNullOrWhiteSpace(postgresTest))
+                    options.UseInMemoryDatabase("IntegrationTestsDb");
+                else
+                {
+                    var testConnection = new Npgsql.NpgsqlConnectionStringBuilder(postgresTest);
+                    if (testConnection.Database?.StartsWith("movieshop_api_test", StringComparison.Ordinal) != true)
+                        throw new InvalidOperationException("PostgreSQL API tests require a dedicated movieshop_api_test database.");
+                    options.UseNpgsql(postgresTest);
+                }
                 return;
             }
 
             var cs = sp.GetRequiredService<IOptions<ConnectionStringsOptions>>().Value.Main;
-            options.UseSqlServer(cs);
+            options.UseNpgsql(cs);
         });
 
         // IAppDbContext mapping
@@ -63,7 +71,7 @@ public static class DependencyInjection
         // Token service (reads JwtOptions via IOptions<JwtOptions>)
         services.AddTransient<IJwtTokenService, JwtTokenService>();
         services.AddMemoryCache();
-        services.AddSingleton<IPayPalCheckoutSessionStore, MemoryPayPalCheckoutSessionStore>();
+        services.AddScoped<IPayPalCheckoutSessionStore, DatabasePayPalCheckoutSessionStore>();
         services.AddHttpClient<IPayPalService, PayPalService>();
         services.AddHttpClient<SendGridAuthEmailService>(client =>
         {

@@ -11,7 +11,7 @@ public sealed class PayPalCheckoutSession
 
 public interface IPayPalCheckoutSessionStore
 {
-    void Store(PayPalCheckoutSession session);
-    PayPalCheckoutSession? Get(string orderId);
-    void MarkCaptured(string orderId);
+    Task StoreAsync(PayPalCheckoutSession session, CancellationToken ct);
+    Task<PayPalCheckoutSession?> GetAsync(string orderId, CancellationToken ct);
+    Task MarkCapturedAsync(string orderId, CancellationToken ct);
 }

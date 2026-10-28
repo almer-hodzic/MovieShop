@@ -1,4 +1,4 @@
-﻿namespace Market.Application.Modules.Catalog.Directors.Queries.List;
+namespace Market.Application.Modules.Catalog.Directors.Queries.List;
 
 public sealed class ListDirectorsQueryHandler(IAppDbContext ctx)
     : IRequestHandler<ListDirectorsQuery, PageResult<ListDirectorsQueryDto>>
@@ -9,8 +9,8 @@ public sealed class ListDirectorsQueryHandler(IAppDbContext ctx)
 
         if (!string.IsNullOrWhiteSpace(request.Name))
         {
-            var term = request.Name.Trim();
-            q = q.Where(x => x.FirstName.Contains(term) || x.LastName.Contains(term));
+            var term = request.Name.Trim().ToLower();
+            q = q.Where(x => x.FirstName.ToLower().Contains(term) || x.LastName.ToLower().Contains(term));
         }
 
         var projectedQuery = q

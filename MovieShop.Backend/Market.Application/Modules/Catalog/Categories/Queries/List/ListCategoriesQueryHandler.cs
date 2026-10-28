@@ -1,4 +1,4 @@
-﻿namespace Market.Application.Modules.Catalog.Categories.Queries.List;
+namespace Market.Application.Modules.Catalog.Categories.Queries.List;
 
 public sealed class ListCategoriesQueryHandler(IAppDbContext ctx)
     : IRequestHandler<ListCategoriesQuery, PageResult<ListCategoriesQueryDto>>
@@ -9,8 +9,8 @@ public sealed class ListCategoriesQueryHandler(IAppDbContext ctx)
 
         if (!string.IsNullOrWhiteSpace(request.CategoryName))
         {
-            var term = request.CategoryName.Trim();
-            q = q.Where(x => x.CategoryName.Contains(term));
+            var term = request.CategoryName.Trim().ToLower();
+            q = q.Where(x => x.CategoryName.ToLower().Contains(term));
         }
 
         var projectedQuery = q

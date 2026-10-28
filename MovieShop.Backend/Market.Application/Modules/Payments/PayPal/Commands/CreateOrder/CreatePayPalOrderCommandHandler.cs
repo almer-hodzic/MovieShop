@@ -30,13 +30,13 @@ public sealed class CreatePayPalOrderCommandHandler(
         var result = await payPalService.CreateOrderAsync(amount, ct);
         var currencyCode = payPalOptions.Value.CurrencyCode;
 
-        checkoutSessionStore.Store(new PayPalCheckoutSession
+        await checkoutSessionStore.StoreAsync(new PayPalCheckoutSession
         {
             OrderId = result.OrderId,
             UserId = userId,
             Amount = amount,
             CurrencyCode = currencyCode,
-        });
+        }, ct);
 
         return new CreatePayPalOrderCommandDto
         {

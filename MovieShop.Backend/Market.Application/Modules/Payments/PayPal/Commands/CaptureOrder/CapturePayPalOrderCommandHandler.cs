@@ -11,7 +11,7 @@ public sealed class CapturePayPalOrderCommandHandler(
         var userId = currentUser.UserId
             ?? throw new MarketConflictException("Authenticated user is required.");
 
-        var session = checkoutSessionStore.Get(request.OrderId)
+        var session = await checkoutSessionStore.GetAsync(request.OrderId, ct)
             ?? throw new MarketNotFoundException("PayPal checkout session was not found or has expired.");
 
         if (session.UserId != userId)
@@ -22,7 +22,7 @@ public sealed class CapturePayPalOrderCommandHandler(
 
         var captureResult = await payPalService.CaptureOrderAsync(request.OrderId, ct);
         if (captureResult.IsCaptured)
-            checkoutSessionStore.MarkCaptured(request.OrderId);
+            await checkoutSessionStore.MarkCapturedAsync(request.OrderId, ct);
 
         return new CapturePayPalOrderCommandDto
         {

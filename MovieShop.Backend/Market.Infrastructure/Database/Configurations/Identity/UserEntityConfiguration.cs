@@ -1,4 +1,4 @@
-﻿namespace Market.Infrastructure.Database.Configurations.Identity;
+namespace Market.Infrastructure.Database.Configurations.Identity;
 
 public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUserEntity>
 {
@@ -26,7 +26,7 @@ public sealed class UserEntityConfiguration : IEntityTypeConfiguration<MarketUse
             .IsRequired();
 
         b.Property(x => x.ProfileImage)
-            .HasColumnType("varbinary(max)");
+            .HasColumnType("bytea");
 
         // Roles
         b.Property(x => x.IsAdmin)

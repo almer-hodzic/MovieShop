@@ -1,3 +1,4 @@
+using Market.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
 using Market.API;
 using Market.API.Middleware;
@@ -30,6 +31,12 @@ public partial class Program
             var builder = WebApplication.CreateBuilder(args.Where(arg => arg != "--initialize-database").ToArray());
             if (initializeDatabase)
                 builder.Configuration["DatabaseStartup:ApplyMigrationsOnStartup"] = "true";
+
+            var databaseConnection = builder.Configuration["ConnectionStrings:Main"];
+            if (string.IsNullOrWhiteSpace(databaseConnection))
+                databaseConnection = builder.Configuration[initializeDatabase ? "POSTGRES_URL_NON_POOLING" : "POSTGRES_URL"];
+            if (!builder.Environment.IsTest() && !string.IsNullOrWhiteSpace(databaseConnection))
+                builder.Configuration["ConnectionStrings:Main"] = PostgresConnection.Normalize(databaseConnection);
 
             // 2) Promote Serilog to full configuration from builder.Configuration
             //    (reads "Serilog" section from appsettings + ENV overrides)
@@ -123,16 +130,11 @@ public partial class Program
                 timeout.CancelAfter(TimeSpan.FromSeconds(5));
                 try
                 {
-                    // SQL connect retries can outlast cancellation alone. Keep readiness independent
-                    // from the application pool and bound the provider's own connection timeout.
-                    var connectionString = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(
-                        db.Database.GetConnectionString())
+                    var connectionString = new Npgsql.NpgsqlConnectionStringBuilder(db.Database.GetConnectionString())
                     {
-                        ConnectTimeout = 3,
-                        ConnectRetryCount = 0,
-                        Pooling = false
+                        Timeout = 3, CommandTimeout = 3, Pooling = false
                     };
-                    await using var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString.ConnectionString);
+                    await using var connection = new Npgsql.NpgsqlConnection(connectionString.ConnectionString);
                     await connection.OpenAsync(timeout.Token);
                     await using var command = connection.CreateCommand();
                     command.CommandText = "SELECT 1";

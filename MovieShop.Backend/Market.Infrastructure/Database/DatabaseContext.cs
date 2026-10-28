@@ -1,4 +1,4 @@
-﻿using Market.Application.Abstractions;
+using Market.Application.Abstractions;
 
 namespace Market.Infrastructure.Database;
 
@@ -18,6 +18,8 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     public DbSet<MovieCategoryEntity> MovieCategories => Set<MovieCategoryEntity>();
     public DbSet<MarketUserEntity> Users => Set<MarketUserEntity>();
     public DbSet<RefreshTokenEntity> RefreshTokens => Set<RefreshTokenEntity>();
+
+    public DbSet<Market.Domain.Entities.Sales.CheckoutSessionEntity> CheckoutSessions => Set<Market.Domain.Entities.Sales.CheckoutSessionEntity>();
 
     private readonly TimeProvider _clock;
     public DatabaseContext(DbContextOptions<DatabaseContext> options, TimeProvider clock) : base(options)

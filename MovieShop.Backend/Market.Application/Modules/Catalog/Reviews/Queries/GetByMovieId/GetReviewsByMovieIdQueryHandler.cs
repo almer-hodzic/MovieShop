@@ -11,13 +11,13 @@ public sealed class GetReviewsByMovieIdQueryHandler(IAppDbContext ctx)
 
         if (!string.IsNullOrWhiteSpace(request.UserName))
         {
-            var term = request.UserName.Trim();
+            var term = request.UserName.Trim().ToLower();
 
             q = q.Where(x => x.User != null &&
                 (
-                    (x.User.Firstname + " " + x.User.Lastname).Contains(term) ||
-                    x.User.Username.Contains(term) ||
-                    x.User.Email.Contains(term)
+                    (x.User.Firstname + " " + x.User.Lastname).ToLower().Contains(term) ||
+                    x.User.Username.ToLower().Contains(term) ||
+                    x.User.Email.ToLower().Contains(term)
                 ));
         }
 

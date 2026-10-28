@@ -26,7 +26,10 @@ public static class DatabaseInitializer
 
         if (env.IsTest())
         {
-            await ctx.Database.EnsureCreatedAsync();
+            if (ctx.Database.IsRelational())
+                await ctx.Database.MigrateAsync();
+            else
+                await ctx.Database.EnsureCreatedAsync();
             await DynamicDataSeeder.SeedAsync(ctx);
             return;
         }

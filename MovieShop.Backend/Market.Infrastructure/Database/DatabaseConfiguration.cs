@@ -1,4 +1,4 @@
-﻿using Market.Domain.Common;
+using Market.Domain.Common;
 using Market.Infrastructure.Database.Seeders;
 using System.Linq.Expressions;
 
@@ -46,6 +46,16 @@ public partial class DatabaseContext
 
         // učitaj sve konfiguracije iz Infrastructure.Database.Configurations
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
+
+        if (Database.IsNpgsql())
+        {
+            modelBuilder.HasPostgresExtension("citext");
+            modelBuilder.Entity<MarketUserEntity>().Property(x => x.Email).HasColumnType("citext");
+            modelBuilder.Entity<MarketUserEntity>().Property(x => x.Username).HasColumnType("citext");
+            modelBuilder.Entity<ActorEntity>().Property(x => x.BirthDate).HasColumnType("date");
+            modelBuilder.Entity<DirectorEntity>().Property(x => x.BirthDate).HasColumnType("date");
+            modelBuilder.Entity<MovieEntity>().Property(x => x.ReleaseDate).HasColumnType("date");
+        }
 
         ApplyGlobalFielters(modelBuilder);
 

@@ -6,7 +6,7 @@ public sealed class GetPayPalOrderStatusQueryHandler(IPayPalService payPalServic
 {
     public async Task<GetPayPalOrderStatusQueryDto> Handle(GetPayPalOrderStatusQuery request, CancellationToken ct)
     {
-        var session = checkoutSessionStore.Get(request.OrderId)
+        var session = await checkoutSessionStore.GetAsync(request.OrderId, ct)
             ?? throw new MarketNotFoundException("PayPal checkout session was not found or has expired.");
         if (session.UserId != currentUser.UserId)
             throw new MarketForbiddenException("This PayPal order does not belong to the current user.");
