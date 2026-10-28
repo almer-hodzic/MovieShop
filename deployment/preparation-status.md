@@ -1,6 +1,6 @@
-# MovieShop PostgreSQL deployment checkpoint
+# Historical MovieShop PostgreSQL preparation checkpoint
 
-Portfolio, HoopsLab, main, and unrelated repositories are unchanged. No paid resources or public deployments created.
+This table records the earlier PostgreSQL preparation checkpoint, not the current deployment state. For current live URLs and verification results, see [public-release-status.md](public-release-status.md). Portfolio, HoopsLab, main, and unrelated repositories remain unchanged; no paid services were enabled.
 
 | # | Item | Result |
 | --- | --- | --- |
