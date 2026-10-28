@@ -12,7 +12,7 @@ The tested baseline and safe non-staff demo seed were applied over the **direct*
 
 Both direct and pooled connections were established using certificate/hostname-validated SSL (`VerifyFull`). `GSS Encryption Mode=Disable` avoids optional Kerberos probing in the Linux container; TLS verification remains required. Real credentials are never recorded here or in Git. Local initialization/probe files and CLI-generated skill artifacts remain under ignored verification storage.
 
-The copied custom `ConnectionStrings__Main` must be refreshed if Marketplace database credentials are rotated; do not assume the custom key rotates with managed variables. No schema or application source changed during provisioning. Existing JWT/SendGrid/PayPal configuration is not yet populated for a public release. No fake initialization-only auth/email values were uploaded to Vercel. Final frontend origin/CORS, real Sandbox checkout, email delivery and hosted application verification remain release steps.
+The copied custom `ConnectionStrings__Main` must be refreshed if Marketplace database credentials are rotated; do not assume the custom key rotates with managed variables. No schema or application source changed during provisioning. JWT, exact CORS, callback URL, database startup policy and Sandbox-only runtime settings are configured in encrypted provider storage. Existing project-scoped SendGrid/PayPal credentials were found and validated; they are now configured encrypted. SendGrid reports a free account with quota available and the configured sender verified; PayPal Sandbox OAuth returned 200. no fake initialization-only credentials were uploaded. Email/payment verification and public deployment remain blocked on the owner account steps below.
 
 ## Provider and compatibility
 
@@ -84,3 +84,28 @@ Sources:
 - https://vercel.com/marketplace/neon/neon
 
 Provisioning security reference: https://www.npgsql.org/doc/security.html
+
+## Final runtime and demo preparation
+
+Vercel reserved API origin: `https://movieshop-api.vercel.app` (not deployed).
+Vercel reserved Angular origin: `https://movieshop-two.vercel.app` (not deployed).
+The frontend project is `movieshop` on Hobby, root `MovieShop.Frontend`. The API remains the existing `movieshop-api` project.
+
+Encrypted API Production settings now include: cryptographically random Jwt__Key (preserve rather than rotate it on retries), exact Jwt__Issuer/Jwt__Audience using those origins, AccessTokenMinutes=20, RefreshTokenDays=14, Production environment, exact Cors__AllowedOrigins__0, Sandbox mode/base URL/USD, MovieShop email display name and exact frontend callback origin.
+
+DatabaseStartup__ApplyMigrationsOnStartup=false, DatabaseStartup__SeedOnStartup=false, and PublicDemo__Seed=false are explicit provider values. The Neon baseline/demo data already exist. Schema changes and seeding are one-off controlled operations, never an automatic scaling/startup action.
+
+The dedicated shared demo account now cannot change its password or email through Profile endpoints; ordinary users retain those features. Global catalog deletion/admin access remain forbidden. A small existing-style login helper fills the shared demo credentials. Its build values MOVIESHOP_PUBLIC_DEMO_USERNAME and MOVIESHOP_PUBLIC_DEMO_PASSWORD are intentionally public, restricted to portfolio-demo, and must never be used for an admin or personal account. They are configured as encrypted Vercel build values but will be visible to browsers by design. Database, JWT, PayPal client secret and SendGrid keys are never read by the frontend generator.
+
+Validation for these changes: 28 tests passed against real PostgreSQL; clean npm ci and production compilation passed; final API container Release build/publish passed; 24 HTTP checks passed through a temporary local Production API backed by Neon, including rejected shared-demo credential changes and catalog deletion. The temporary API was stopped. Local compilation used a clearly marked public Sandbox client-ID fixture because the real client ID is not yet supplied; these artifacts must not be deployed. No production HTTPS, real email, real Sandbox capture or post-deployment restart has been verified.
+
+### Required manual provider steps
+
+SendGrid: open https://app.sendgrid.com/ and use only a no-card free trial. Settings -> Sender Authentication -> Verify a Single Sender; From Name MovieShop, From Email al1merr248@gmail.com if permitted by SendGrid. Complete the verification email. Enter only truthful required sender details yourself. Stop if the address is rejected or billing/card entry is requested; report the actual screen/blocker rather than substituting an unverified address. Settings -> API Keys: create a restricted Mail Send credential. Save it directly as API Production Email__ApiKey, and save the actual verified address as Email__FromEmail at https://vercel.com/almer-hodzics-projects/movieshop-api/settings/environment-variables . Never paste keys into chat. SendGrid currently provides a 60-day trial, not ongoing free delivery; do not upgrade automatically.
+
+PayPal: open https://developer.paypal.com/dashboard/ -> Apps & Credentials -> Sandbox -> Create App. Use a Merchant app named MovieShop Demo with a Sandbox business account; retain/create a Sandbox personal buyer account for approval testing. Save Sandbox credentials directly as API Production PayPal__ClientId and PayPal__ClientSecret in Vercel. Never use Live or paste credentials into chat. A browser approval with the buyer's Sandbox account will be needed for the representative payment test after deployment.
+
+The existing project .NET user-secret store supplied all four required provider values. They were validated and transferred privately to encrypted Vercel Production settings; no new signup/app creation is required. The original manual steps above are fallback instructions only. Do not deploy the API with fabricated credentials, disable email, or change Production to Development. After the keys are supplied, verify real provider behavior, copy only the public Sandbox client ID to frontend MOVIESHOP_PAYPAL_SANDBOX_CLIENT_ID, rebuild, deploy the exact deployment-branch commit, and perform the full public HTTPS/restart checks.
+
+Current checkpoint report: [public-release-status.md](public-release-status.md).
+Sources: https://www.twilio.com/docs/sendgrid/ui/sending-email/sender-verification ; https://www.twilio.com/docs/sendgrid/ui/account-and-settings/upgrading-your-plan ; https://developer.paypal.com/api/get-started/ .

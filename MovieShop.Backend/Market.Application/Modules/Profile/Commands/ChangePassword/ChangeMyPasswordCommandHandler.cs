@@ -15,6 +15,9 @@ public sealed class ChangeMyPasswordCommandHandler(
             .FirstOrDefaultAsync(x => x.Id == userId && !x.IsDeleted, ct)
             ?? throw new MarketNotFoundException("Authenticated user profile not found.");
 
+        if (string.Equals(user.Username, "portfolio-demo", StringComparison.OrdinalIgnoreCase))
+            throw new MarketForbiddenException("Login credentials for the shared demo account cannot be changed.");
+
         var currentPasswordVerification = hasher.VerifyHashedPassword(user, user.PasswordHash, request.CurrentPassword);
         if (currentPasswordVerification == PasswordVerificationResult.Failed)
             throw new MarketConflictException("Current password is incorrect.");

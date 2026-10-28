@@ -4,6 +4,10 @@
   </mat-card-title>
   <mat-divider></mat-divider>
   <mat-card-content>
+    <p *ngIf="publicDemo">
+      <button mat-stroked-button type="button" (click)="useDemoAccount()" [disabled]="isLoading">Use demo account</button>
+      <small> Shared demo ? Sandbox payments only</small>
+    </p>
     <form novalidate [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
       <p>
         <mat-form-field appearance="outline" color="warn">

@@ -12,6 +12,9 @@ public sealed class ChangeMyEmailCommandHandler(IAppDbContext ctx, IAppCurrentUs
             .FirstOrDefaultAsync(x => x.Id == userId && !x.IsDeleted, ct)
             ?? throw new MarketNotFoundException("Authenticated user profile not found.");
 
+        if (string.Equals(user.Username, "portfolio-demo", StringComparison.OrdinalIgnoreCase))
+            throw new MarketForbiddenException("Login credentials for the shared demo account cannot be changed.");
+
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
         if (string.Equals(user.Email, normalizedEmail, StringComparison.OrdinalIgnoreCase))
             throw new MarketConflictException("You already have this email.");

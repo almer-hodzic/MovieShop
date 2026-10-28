@@ -58,3 +58,5 @@ See [runbook](README.md) for configuration, compatibility changes and the manual
 ## Provisioning follow-up
 
 Only this report and README were updated after provisioning; application source remains at the validated PostgreSQL implementation. No secrets, generated skills, or local environment files are included. Vercel API project is prepared without a public deployment; Neon remains on Free.
+
+Latest runtime/demo preparation and outstanding manual provider steps are recorded in [public-release-status.md](public-release-status.md). No public application deployment is verified.

@@ -1,3 +1,4 @@
+import { environment } from '../../../../environments/environment';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -23,6 +24,15 @@ export class LoginComponent extends BaseComponent {
   private twoFactorChallenge = inject(TwoFactorChallengeService);
   private toaster = inject(ToasterService);
   hidePassword = true;
+  readonly publicDemo = (environment as typeof environment & {
+    publicDemo?: { username: string; password: string };
+  }).publicDemo;
+
+  useDemoAccount(): void {
+    if (this.publicDemo) this.form.patchValue({
+      email: this.publicDemo.username, password: this.publicDemo.password
+    });
+  }
 
   form = this.fb.group({
     email: ['', [Validators.required]],
