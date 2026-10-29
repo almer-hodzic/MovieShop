@@ -11,15 +11,50 @@
 
 mat-form-field {
   width: 100%;
-  min-width: 300px;
+  min-width: 0;
 }
 
 mat-card-title,
-mat-card-content,
 .lock-icon,
 .btn {
   display: flex;
   justify-content: center;
+}
+
+mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 16px 0 0;
+}
+
+form {
+  width: 100%;
+  min-width: 0;
+}
+
+form > p {
+  margin: 0 0 8px;
+}
+
+.btn {
+  gap: 10px;
+}
+
+.demo-account {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.demo-account small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .lock-icon {
@@ -28,6 +63,8 @@ mat-card-content,
 
 .action-btn {
   width: 140px;
+  min-width: 0;
+  flex: 1;
 }
 
 .bottom-btns {
@@ -55,16 +92,12 @@ a:visited {
 }
 
 @media only screen and (max-width: 380px) {
-  mat-form-field {
-    min-width: 0;
-  }
-
   .btn {
-    flex-wrap: wrap;
-    gap: 10px;
+    flex-direction: column;
   }
 
-  .btn .action-btn {
-    margin-left: 0 !important;
+  .action-btn {
+    width: 100%;
+    flex: auto;
   }
 }

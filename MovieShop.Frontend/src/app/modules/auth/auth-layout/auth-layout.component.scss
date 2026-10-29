@@ -71,3 +71,10 @@ mat-card {
     top: 1%;
   }
 }
+
+// Only the login card: retain its desktop width and fit narrow viewports.
+:host ::ng-deep .showcase > mat-card:has(app-login) {
+  max-width: calc(100vw - 64px);
+  margin-left: 0;
+  transform: translateX(-50%);
+}
